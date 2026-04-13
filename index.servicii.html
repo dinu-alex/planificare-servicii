@@ -1,0 +1,2790 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planificare Servicii — Compania I Elevi</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bg4:#222;
+  --border:#2a2a2a;--border2:#333;
+  --orange:#f57c00;--orange2:#ff9800;--od:rgba(245,124,0,.12);
+  --green:#00e676;--gd:rgba(0,230,118,.12);
+  --red:#f44336;--rd:rgba(244,67,54,.12);
+  --blue:#2196f3;--bd:rgba(33,150,243,.12);
+  --yellow:#ffc107;--yd:rgba(255,193,7,.12);
+  --purple:#9c27b0;--pd:rgba(156,39,176,.12);
+  --text:#e0e0e0;--text2:#aaa;--text3:#666;
+  --mono:'Share Tech Mono',monospace;
+  --body:'Barlow',sans-serif;
+  --cond:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(245,124,0,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(245,124,0,.03) 1px,transparent 1px);
+  background-size:32px 32px;}
+.page{display:none;position:relative;z-index:1;min-height:100vh;}
+.page.active{display:flex;flex-direction:column;}
+
+/* AUTH */
+.auth-layout{display:flex;min-height:100vh;}
+.auth-left{flex:1;background:#0d0d0d;padding:48px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--border);position:relative;overflow:hidden;}
+.auth-left::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(245,124,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,124,0,.04) 1px,transparent 1px);background-size:28px 28px;}
+.auth-brand{display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.auth-brand-icon{width:36px;height:36px;border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;}
+.auth-brand-icon svg{width:18px;height:18px;fill:var(--orange);}
+.auth-brand-name{font-family:var(--cond);font-size:22px;font-weight:800;letter-spacing:2px;}
+.auth-quote{position:relative;z-index:1;}
+.auth-quote p{font-family:var(--mono);font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px;}
+.auth-quote span{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:1px;}
+.auth-right{width:500px;display:flex;align-items:center;justify-content:center;padding:48px;background:var(--bg);}
+.auth-card{width:100%;}
+.auth-card::before{content:'';display:block;width:40px;height:4px;background:var(--orange);margin-bottom:24px;}
+.auth-card h2{font-family:var(--cond);font-size:32px;font-weight:800;letter-spacing:3px;margin-bottom:6px;}
+.auth-card p.sub{font-size:13px;color:var(--text3);margin-bottom:28px;font-family:var(--mono);}
+
+/* FORMS */
+.field{margin-bottom:16px;}
+.field label{display:block;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:2px;color:var(--text3);margin-bottom:8px;}
+.input-wrap{position:relative;}
+.input-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--text3);fill:none;}
+.input-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:14px;padding:12px 12px 12px 40px;outline:none;transition:border-color .2s;}
+.input-wrap input:focus{border-color:var(--orange);}
+select.inp,textarea.inp,.simple-input{background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s;width:100%;}
+select.inp{padding:11px 12px;appearance:none;}
+textarea.inp{padding:12px;resize:vertical;line-height:1.6;}
+.simple-input{padding:9px 12px;}
+select.inp:focus,textarea.inp:focus,.simple-input:focus{border-color:var(--orange);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--cond);font-weight:700;letter-spacing:2px;font-size:13px;padding:10px 18px;border:none;cursor:pointer;transition:all .15s;text-transform:uppercase;white-space:nowrap;}
+.btn-orange{background:var(--orange);color:#000;}
+.btn-orange:hover{background:var(--orange2);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:var(--orange);color:var(--orange);}
+.btn-red{background:transparent;color:var(--red);border:1px solid var(--red);}
+.btn-red:hover{background:var(--rd);}
+.btn-green{background:transparent;color:var(--green);border:1px solid var(--green);}
+.btn-green:hover{background:var(--gd);}
+.btn-purple{background:transparent;color:var(--purple);border:1px solid var(--purple);}
+.btn-purple:hover{background:var(--pd);}
+.btn-full{width:100%;justify-content:center;padding:14px;font-size:14px;}
+.btn svg{width:15px;height:15px;}
+
+/* TABS */
+.tab-switcher{display:flex;border:1px solid var(--border2);margin-bottom:20px;}
+.tab-btn{flex:1;padding:10px;font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:2px;text-align:center;cursor:pointer;transition:all .15s;color:var(--text3);background:transparent;border:none;text-transform:uppercase;}
+.tab-btn.active{background:var(--bg4);color:var(--text);}
+
+/* TOPBAR */
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.topbar-brand{display:flex;align-items:center;gap:10px;}
+.topbar-brand svg{width:18px;height:18px;fill:var(--orange);}
+.topbar-brand span{font-family:var(--cond);font-size:17px;font-weight:800;letter-spacing:2px;}
+.topbar-back{display:flex;align-items:center;gap:6px;color:var(--text3);cursor:pointer;font-family:var(--mono);font-size:12px;transition:color .15s;flex-shrink:0;}
+.topbar-back:hover{color:var(--orange);}
+.topbar-back svg{width:16px;height:16px;stroke:currentColor;fill:none;}
+.topbar-title{font-family:var(--cond);font-size:16px;font-weight:800;letter-spacing:2px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;}
+.topbar-user{font-family:var(--mono);font-size:12px;color:var(--text2);}
+
+/* LAYOUT */
+.main{flex:1;padding:28px 20px;max-width:1400px;width:100%;margin:0 auto;}
+.main-narrow{max-width:760px;margin:0 auto;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);padding:22px;margin-bottom:14px;}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.card-header svg{width:16px!important;height:16px!important;flex-shrink:0;}
+.card-header svg *,.topbar-brand svg *{pointer-events:none;}
+.card-header h3{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title-row h3{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s;}
+.stat-card:hover{border-color:var(--orange);}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:0;height:0;border-left:24px solid transparent;border-top:24px solid var(--orange);}
+.stat-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;}
+.stat-value{font-family:var(--cond);font-size:38px;font-weight:800;line-height:1;}
+
+/* ACTIONS GRID */
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.action-btn{background:var(--bg3);border:1px solid var(--border2);padding:18px 12px;text-align:center;cursor:pointer;transition:all .15s;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text2);text-transform:uppercase;}
+.action-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--od);}
+.action-btn.primary{background:var(--orange);color:#000;border-color:var(--orange);}
+.action-btn.primary:hover{background:var(--orange2);}
+.action-btn svg{display:block;margin:0 auto 8px;width:18px;height:18px;stroke:currentColor;fill:none;}
+.action-btn.primary svg{stroke:#000;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+
+/* BADGE */
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border:1px solid;}
+.badge-orange{color:var(--orange);border-color:var(--orange);background:var(--od);}
+.badge-green{color:var(--green);border-color:var(--green);background:var(--gd);}
+.badge-red{color:var(--red);border-color:var(--red);background:var(--rd);}
+.badge-gray{color:var(--text3);border-color:var(--border2);}
+.badge-yellow{color:var(--yellow);border-color:var(--yellow);background:var(--yd);}
+.badge-blue{color:var(--blue);border-color:var(--blue);background:var(--bd);}
+.badge-purple{color:var(--purple);border-color:var(--purple);background:var(--pd);}
+
+/* ITEMS */
+.plan-item{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);background:var(--bg3);margin-bottom:8px;}
+.plan-item-icon{width:34px;height:34px;background:var(--od);border:1px solid var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.plan-item-icon svg{width:15px;height:15px;stroke:var(--orange);fill:none;}
+.plan-item-info{flex:1;min-width:0;}
+.plan-item-title{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.plan-item-meta{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.plan-item-actions{display:flex;gap:10px;flex-shrink:0;}
+.icon-btn{background:none;border:none;cursor:pointer;color:var(--text3);transition:color .15s;padding:3px;}
+.icon-btn:hover{color:var(--orange);}
+.icon-btn.red:hover{color:var(--red);}
+.icon-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;}
+
+.person-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);background:var(--bg3);margin-bottom:8px;}
+.person-avatar{width:32px;height:32px;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--cond);font-size:13px;font-weight:700;color:var(--orange);flex-shrink:0;}
+.person-info{flex:1;}
+.person-name{font-family:var(--mono);font-size:12px;}
+.person-email{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.person-actions{display:flex;gap:8px;}
+
+.anunt-item{background:var(--bg3);border:1px solid var(--border);padding:14px;margin-bottom:8px;}
+.anunt-title{font-family:var(--mono);font-size:13px;color:var(--orange);font-weight:bold;margin-bottom:4px;}
+.anunt-body{font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:8px;white-space:pre-wrap;}
+.anunt-meta{font-family:var(--mono);font-size:10px;color:var(--text3);}
+
+/* RAPORT */
+.raport-item{background:var(--bg3);border:1px solid var(--border);padding:14px;margin-bottom:8px;}
+.raport-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.raport-name{font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:1px;}
+.raport-motiv{font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.6;}
+.raport-meta{font-family:var(--mono);font-size:10px;color:var(--text3);display:flex;gap:14px;flex-wrap:wrap;}
+.raport-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+
+/* DOCUMENT MODEL */
+.doc-item{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);background:var(--bg3);margin-bottom:8px;}
+.doc-icon{width:34px;height:34px;background:var(--bd);border:1px solid var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.doc-icon svg{width:15px;height:15px;stroke:var(--blue);fill:none;}
+.doc-info{flex:1;min-width:0;}
+.doc-name{font-family:var(--mono);font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.doc-meta{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.doc-actions{display:flex;gap:8px;flex-shrink:0;}
+
+/* SCHEDULE TABLE */
+.schedule-wrap{overflow:auto;flex:1;}
+.schedule-table{border-collapse:collapse;font-family:var(--mono);font-size:11px;min-width:100%;}
+.schedule-table th{background:var(--bg3);border:1px solid var(--border);padding:5px 3px;text-align:center;color:var(--text3);font-weight:400;min-width:30px;white-space:nowrap;position:sticky;top:0;z-index:10;}
+.schedule-table th.name-col{min-width:170px;text-align:left;padding-left:8px;}
+.schedule-table th.nr-col{min-width:32px;}
+.schedule-table td{border:1px solid var(--border);padding:3px;text-align:center;}
+.schedule-table td.name-cell{padding:5px 8px;text-align:left;color:var(--text2);white-space:nowrap;}
+.schedule-table td.nr-cell{text-align:center;color:var(--text3);font-size:10px;}
+.schedule-table tr:hover td{background:rgba(255,255,255,.02);}
+.svc-cell{color:var(--orange);font-weight:bold;font-size:11px;cursor:pointer;min-width:30px;min-height:24px;transition:all .12s;border:1px solid transparent!important;}
+.svc-cell:hover{background:var(--od)!important;border:1px solid var(--orange)!important;color:var(--orange2);transform:scale(1.12);z-index:5;box-shadow:0 0 8px rgba(245,124,0,.3);}
+.svc-cell:active{transform:scale(.94);}
+.svc-cell.empty-c{color:var(--border2);}
+.svc-cell.ap-cell{color:var(--purple)!important;}
+.svc-cell.ap-cell:hover{background:var(--pd)!important;border-color:var(--purple)!important;color:var(--purple)!important;box-shadow:0 0 8px rgba(156,39,176,.3);}
+.weekend-col{background:rgba(255,255,255,.015);}
+/* Day column colors */
+.col-vineri{background:rgba(255,193,7,.07)!important;}
+.col-sambata{background:rgba(245,124,0,.10)!important;}
+.col-duminica{background:rgba(244,67,54,.10)!important;}
+.col-vineri .day-num,.th-vineri .day-num{color:var(--yellow)!important;}
+.col-sambata .day-num,.th-sambata .day-num{color:var(--orange)!important;}
+.col-duminica .day-num,.th-duminica .day-num{color:var(--red)!important;}
+.th-vineri{background:rgba(255,193,7,.10)!important;border-bottom:2px solid var(--yellow)!important;}
+.th-sambata{background:rgba(245,124,0,.12)!important;border-bottom:2px solid var(--orange)!important;}
+.th-duminica{background:rgba(244,67,54,.12)!important;border-bottom:2px solid var(--red)!important;}
+.th-vineri .day-name{color:var(--yellow)!important;}
+.th-sambata .day-name{color:var(--orange)!important;}
+.th-duminica .day-name{color:var(--red)!important;}
+.day-header{display:flex;flex-direction:column;align-items:center;}
+.day-name{font-size:9px;color:var(--text3);}
+.day-num{font-size:11px;}
+.weekend-header .day-num{color:var(--text3);}
+.sched-view-wrap{overflow:auto;flex:1;padding:20px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);padding:26px;min-width:300px;max-width:520px;width:95%;animation:mIn .15s ease;max-height:90vh;overflow-y:auto;}
+@keyframes mIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal h3{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:2px;margin-bottom:18px;text-transform:uppercase;}
+.svc-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.svc-opt{padding:13px;background:var(--bg3);border:2px solid var(--border2);text-align:center;cursor:pointer;font-family:var(--mono);font-size:14px;color:var(--text2);transition:all .12s;font-weight:bold;}
+.svc-opt:hover{background:var(--od);border-color:var(--orange);color:var(--orange);transform:scale(1.04);}
+.svc-opt.selected{background:var(--od);border-color:var(--orange);color:var(--orange);}
+.svc-opt.ap-opt:hover,.svc-opt.ap-opt.selected{background:var(--pd);border-color:var(--purple);color:var(--purple);}
+.svc-opt.clear{color:var(--red);}
+.svc-opt.clear:hover{background:var(--rd);border-color:var(--red);}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-tab{padding:6px 12px;font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--text3);background:transparent;transition:all .15s;}
+.filter-tab.active{border-color:var(--orange);color:var(--orange);background:var(--od);}
+
+/* ELEV NAV */
+.elev-nav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:22px;overflow-x:auto;}
+.elev-nav-btn{padding:11px 20px;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:2px;cursor:pointer;border:none;background:transparent;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;text-transform:uppercase;white-space:nowrap;flex-shrink:0;}
+.elev-nav-btn.active{color:var(--orange);border-bottom-color:var(--orange);}
+
+/* MISC */
+.antet-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sec-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;}
+.tip-desc{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6;}
+.cod-box{background:var(--bg3);border:1px solid var(--border2);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.cod-value{font-family:var(--mono);font-size:24px;color:var(--green);letter-spacing:4px;font-weight:bold;}
+.cod-actions{display:flex;gap:8px;flex-shrink:0;}
+.info-box{background:var(--bg3);border-left:3px solid var(--orange);padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:14px;}
+.info-box.purple{border-color:var(--purple);}
+.alert{padding:10px 14px;font-family:var(--mono);font-size:11px;margin-bottom:14px;}
+.alert-err{background:var(--rd);border:1px solid var(--red);color:var(--red);}
+.alert-ok{background:var(--gd);border:1px solid var(--green);color:var(--green);}
+.link{color:var(--orange);text-decoration:none;font-family:var(--mono);font-size:12px;cursor:pointer;}
+.link:hover{text-decoration:underline;}
+.empty{text-align:center;padding:40px;color:var(--text3);}
+.empty svg{width:40px;height:40px;stroke:var(--border2);fill:none;margin:0 auto 12px;display:block;}
+.empty p{font-family:var(--mono);font-size:12px;}
+.instr{background:var(--bg3);border:1px solid var(--border);padding:18px;}
+.instr h4{font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;}
+.instr ol{padding-left:16px;}
+.instr li{font-family:var(--mono);font-size:11px;color:var(--text3);line-height:2.2;}
+.instr .hi{color:var(--green);}
+.vis-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.vis-plan-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);background:var(--bg3);margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.vis-plan-item:hover{border-color:var(--orange);background:var(--od);}
+
+/* AP TOGGLE */
+.ap-toggle-box{background:var(--bg3);border:1px solid var(--border2);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.toggle-switch{width:46px;height:24px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle-switch.on{background:var(--purple);}
+.toggle-switch::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s;}
+.toggle-switch.on::after{left:25px;}
+.toggle-label{font-family:var(--mono);font-size:12px;color:var(--text2);}
+.toggle-label strong{color:var(--purple);}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border2);padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;font-family:var(--mono);font-size:12px;color:var(--text3);}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);color:var(--blue);}
+.upload-zone svg{width:28px;height:28px;stroke:currentColor;fill:none;display:block;margin:0 auto 10px;}
+
+/* ICON SIZE SAFETY */
+svg:not(.action-btn svg):not(.upload-zone svg){max-width:22px;}
+
+/* SCROLLBAR */
+
+
+/* DOWNLOAD BUTTON — always prominent */
+.btn-download{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;}
+.btn-download:hover{background:#1976d2!important;}
+/* PWA INSTALL */
+.pwa-install-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:2000;
+  background:linear-gradient(90deg,#111 0%,#1a1a1a 100%);
+  border-top:1px solid var(--orange);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;gap:12px;
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.pwa-install-bar.hidden{display:none;}
+.pwa-install-text{font-family:var(--mono);font-size:12px;color:var(--text2);}
+.pwa-install-text strong{color:var(--orange);}
+.pwa-install-actions{display:flex;gap:10px;flex-shrink:0;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);}
+::-webkit-scrollbar-thumb:hover{background:var(--orange);}
+
+@media(max-width:900px){
+  .auth-left{display:none;}.auth-right{width:100%;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .dash-grid{grid-template-columns:1fr;}
+  .vis-split{grid-template-columns:1fr;}
+  .actions-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+
+<meta name="theme-color" content="#0a0a0a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Planificare Servicii">
+<link rel="manifest" id="pwa-manifest">
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- ══ LOGIN ══ -->
+<div id="page-login" class="page active">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-brand">
+        <div class="auth-brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg></div>
+        <span class="auth-brand-name">PLANIFICARE SERVICII</span>
+      </div>
+      <div class="auth-quote">
+        <p>"Sistem de planificare automatizată pentru serviciile companiei militare."</p>
+        <span>— COMPANIA I ELEVI</span>
+      </div>
+      <div style="position:relative;z-index:1">
+        <button id="login-install-btn" onclick="installPWA()" style="display:none;background:transparent;border:1px solid var(--green);color:var(--green);font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:2px;padding:10px 18px;cursor:pointer;text-transform:uppercase">
+          📲 INSTALEAZĂ APLICAȚIA PE DISPOZITIV
+        </button>
+        <div id="login-install-manual" style="display:none;font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:8px;line-height:1.8">
+          <div style="color:var(--green);margin-bottom:4px">Cum instalezi manual:</div>
+          <div>• <strong style="color:var(--text2)">Chrome/Edge:</strong> click ⋮ → "Instalează aplicația"</div>
+          <div>• <strong style="color:var(--text2)">Safari iOS:</strong> click □↑ → "Adaugă pe ecran principal"</div>
+          <div>• <strong style="color:var(--text2)">Firefox:</strong> click ⋮ → "Instalează"</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card">
+        <h2>AUTENTIFICARE</h2>
+        <p class="sub">Introduceți credențialele pentru a accesa sistemul</p>
+        <div id="login-err" class="alert alert-err" style="display:none"></div>
+        <div class="field"><label>EMAIL</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            <input type="email" id="login-email" placeholder="email@exemplu.ro">
+          </div>
+        </div>
+        <div class="field"><label>PAROLĂ</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+        </div>
+        <button class="btn btn-orange btn-full" onclick="doLogin()">CONECTARE</button>
+        <p style="text-align:center;margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--text3)">
+          Nu aveți cont? <span class="link" onclick="showPage('page-register')">Înregistrare</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REGISTER ══ -->
+<div id="page-register" class="page">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-brand">
+        <div class="auth-brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg></div>
+        <span class="auth-brand-name">PLANIFICARE SERVICII</span>
+      </div>
+      <div class="auth-quote">
+        <p>"Creați un cont pentru a accesa planificările serviciilor."</p>
+        <span>— SISTEM DE MANAGEMENT</span>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card">
+        <h2>ÎNREGISTRARE</h2>
+        <p class="sub">Creați un cont nou în sistem</p>
+        <div id="reg-err" class="alert alert-err" style="display:none"></div>
+        <div id="reg-ok" class="alert alert-ok" style="display:none"></div>
+        <div class="tab-switcher">
+          <button class="tab-btn active" id="tab-elev" onclick="setRegTab('elev')">ELEV</button>
+          <button class="tab-btn" id="tab-admin" onclick="setRegTab('admin')">ADMINISTRATOR</button>
+        </div>
+        <div class="field"><label>NUME COMPLET</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <input type="text" id="reg-name" placeholder="Ion Popescu">
+          </div>
+        </div>
+        <div class="field"><label>EMAIL</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            <input type="email" id="reg-email" placeholder="email@exemplu.ro">
+          </div>
+        </div>
+        <div id="reg-cod-wrap" class="field"><label>COD ACTIVARE</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="text" id="reg-cod" placeholder="ex: 4D821D1C" style="text-transform:uppercase">
+          </div>
+        </div>
+        <div class="field"><label>PAROLĂ</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="reg-pass" placeholder="••••••••">
+          </div>
+        </div>
+        <div class="field"><label>CONFIRMĂ PAROLA</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="reg-pass2" placeholder="••••••••">
+          </div>
+        </div>
+        <div id="reg-info" class="info-box">După înregistrare, introduceți codul primit de la administrator pentru activarea contului.</div>
+        <button class="btn btn-orange btn-full" id="reg-submit" onclick="doRegister()">CREARE CONT</button>
+        <p style="text-align:center;margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--text3)">
+          Aveți deja cont? <span class="link" onclick="showPage('page-login')">Autentificare</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN DASHBOARD ══ -->
+<div id="page-admin" class="page">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg>
+      <span>ADMIN PANEL</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="admin-username"></span>
+      <button class="btn btn-ghost" id="admin-install-btn" onclick="installPWA()" title="Instalați aplicația pe dispozitiv" style="border-color:var(--green);color:var(--green);display:none">📲 INSTALEAZĂ APP</button>
+      <button class="btn btn-ghost" onclick="showPage('page-setari-admin');initSetariAdmin()">⚙ SETĂRI</button>
+      <button class="btn btn-ghost" onclick="doLogout()">⏻ DECONECTARE</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="stats-row">
+      <div class="stat-card" onclick="showPage('page-admin')"><div class="stat-label">PLANIFICĂRI ACTIVE</div><div class="stat-value" id="stat-planificari">0</div></div>
+      <div class="stat-card" onclick="showPage('page-elevi')"><div class="stat-label">CONTURI AȘTEPTARE</div><div class="stat-value" id="stat-pending">0</div></div>
+      <div class="stat-card" onclick="showPage('page-rapoarte-admin')"><div class="stat-label">RAPOARTE NOI</div><div class="stat-value" id="stat-rapoarte" style="color:var(--yellow)">0</div></div>
+      <div class="stat-card" onclick="showPage('page-elevi')"><div class="stat-label">COD ACTIVARE</div><div class="stat-value" id="stat-cod" style="color:var(--green);font-size:22px;margin-top:4px">—</div></div>
+    </div>
+    <div class="dash-grid">
+      <div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-header"><h3>ACȚIUNI RAPIDE</h3></div>
+          <div class="actions-grid">
+            <div class="action-btn primary" onclick="showPage('page-gen')">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>GEN. PLANIFICARE
+            </div>
+            <div class="action-btn" onclick="showPage('page-elevi')">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>ELEVI
+            </div>
+            <div class="action-btn" onclick="showPage('page-anunturi')">
+              <svg viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>ANUNȚURI
+            </div>
+            <div class="action-btn" onclick="showPage('page-rapoarte-admin')">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>RAPOARTE
+            </div>
+            <div class="action-btn" onclick="showPage('page-modele')">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>MODELE DOC.
+            </div>
+            <div class="action-btn" onclick="showPage('page-admins')">
+              <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg>ADMINISTRATORI
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="instr">
+          <h4>INSTRUCȚIUNI</h4>
+          <ol>
+            <li>Generați planificarea pentru luna dorită</li>
+            <li>Editați manual dacă este necesar</li>
+            <li>Descărcați Word (.docx) pentru printare</li>
+            <li>Cod activare elevi: <span class="hi" id="instr-cod">—</span></li>
+            <li>Serviciul AP se activează din setări generare</li>
+            <li>Rapoartele noi apar în secțiunea Rapoarte</li>
+            <li>Modelele de rapoarte se gestionează din Modele Doc.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title-row">
+        <h3>PLANIFICĂRI RECENTE</h3>
+        <button class="btn btn-orange" onclick="showPage('page-gen')">+ NOUĂ</button>
+      </div>
+      <div id="admin-plan-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GENERARE ══ -->
+<div id="page-gen" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="showPage('page-admin')"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span class="topbar-title">GENERARE PLANIFICARE</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div id="gen-err" class="alert alert-err" style="display:none"></div>
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3>TIP PLANIFICARE</h3></div>
+      <div class="tab-switcher">
+        <button class="tab-btn active" id="tip-baieti" onclick="setTip('baieti')">BĂIEȚI (GS, P1-P4, M, M)</button>
+        <button class="tab-btn" id="tip-fete" onclick="setTip('fete')">FETE (GS, P1-P4, M)</button>
+      </div>
+      <div class="tip-desc" id="tip-desc">Servicii zilnice: GS, P1, P2, P3, P4, M, M. Weekend: GS, P1, P2, P3, P4, M.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><h3>PERIOADĂ</h3></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><div class="sec-label">AN</div><select class="inp" id="gen-an"></select></div>
+        <div><div class="sec-label">LUNĂ</div><select class="inp" id="gen-luna"></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--purple)" fill="none" style="width:16px;height:16px"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><h3>SERVICIUL AP</h3></div>
+      <div class="ap-toggle-box">
+        <div>
+          <div class="toggle-label"><strong>AP — Ajutor de Post</strong></div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:4px">Alternează zilnic între băieți și fete. Sincronizat automat cu planificarea celeilalte grupe.</div>
+        </div>
+        <div id="ap-toggle" class="toggle-switch" onclick="toggleAP()"></div>
+      </div>
+      <div id="ap-info" class="info-box purple" style="margin-top:12px;margin-bottom:0;display:none">
+        ⚠ Serviciul AP este activ. Algoritmul va aloca câte o persoană pe zi, alternând: Ziua 1 → Băiat, Ziua 2 → Fată, etc. Generați <strong>ambele</strong> planificări (băieți și fete) pentru luna respectivă pentru sincronizare completă.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><h3>ANTET DOCUMENT</h3></div>
+      <div class="antet-grid">
+        <div><div class="sec-label">GRAD COMANDANT</div><input class="simple-input" id="gen-grad-cmd" placeholder="ex: Slt."></div>
+        <div><div class="sec-label">NUME COMANDANT</div><input class="simple-input" id="gen-nume-cmd" placeholder="ex: CIOBANU Liviu"></div>
+        <div><div class="sec-label">GRAD ÎNTOCMIT</div><input class="simple-input" id="gen-grad-int" placeholder="ex: Sg. Maj."></div>
+        <div><div class="sec-label">NUME ÎNTOCMIT</div><input class="simple-input" id="gen-nume-int" placeholder="ex: Văsi"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><h3>LISTA PERSOANE</h3></div>
+      <div class="sec-label">INTRODUCEȚI NUMELE (SEPARATE PRIN VIRGULĂ SAU LINIE NOUĂ)</div>
+      <textarea class="inp" id="gen-persoane" rows="7" placeholder="Popescu Ion, Ionescu Maria&#10;Georgescu Andrei"></textarea>
+      <div id="persoane-count" style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:6px">0 persoane detectate</div>
+    </div>
+    <div class="card">
+      <div class="card-header" style="justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <h3>PLANIFICARE LUNA PRECEDENTĂ</h3>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:11px" onclick="reincarcaPrev()">↺ REÎNCARCĂ</button>
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:11px" onclick="togglePrevEdit()">✎ EDITARE</button>
+        </div>
+      </div>
+      <div class="sec-label">FORMAT: NUME PRENUME: 1-GS, 5-P1, 12-M</div>
+      <textarea class="inp" id="gen-prev" rows="4" placeholder="Popescu Ion: 3-GS, 12-P2, 25-M&#10;Ionescu Maria: 5-P1, 15-M, 28-GS" readonly></textarea>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:6px">Algoritmul evită același serviciu din ultima zi a lunii precedente.</div>
+    </div>
+    <button class="btn btn-orange btn-full" style="font-size:14px;padding:15px" onclick="genereazaPlanificare()">⚙ GENERARE PLANIFICARE</button>
+    <div style="height:20px"></div>
+  </div></div>
+</div>
+
+<!-- ══ EDITARE ══ -->
+<div id="page-edit" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="showPage('page-admin')"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span class="topbar-title" id="edit-title">EDITARE</span></div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="previzualizeaza()">👁 PREVIEW</button>
+      <button class="btn btn-orange" style="background:var(--blue);color:#fff" onclick="exportWord(editingPlanId)">📄 DESCARCĂ WORD</button>
+      <button class="btn btn-orange" onclick="salveazaPlanificare()">💾 SALVARE</button>
+    </div>
+  </div>
+  <div style="padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--border)">
+    <div class="antet-grid" style="max-width:900px">
+      <div><div class="sec-label">GRAD COMANDANT</div><input class="simple-input" id="edit-grad-cmd"></div>
+      <div><div class="sec-label">NUME COMANDANT</div><input class="simple-input" id="edit-nume-cmd"></div>
+      <div><div class="sec-label">GRAD ÎNTOCMIT</div><input class="simple-input" id="edit-grad-int"></div>
+      <div><div class="sec-label">NUME ÎNTOCMIT</div><input class="simple-input" id="edit-nume-int"></div>
+    </div>
+  </div>
+  <div style="padding:8px 20px;background:var(--bg3);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text3)">
+    <span style="color:var(--orange)">Click pe celulă</span> pentru a edita &nbsp;|&nbsp; <span style="color:var(--text3)">🔍 Caută după nume în bara de mai jos</span> &nbsp;|&nbsp;
+    <span style="color:var(--orange)">GS</span>: Gradat &nbsp;<span style="color:var(--orange)">P1-P4</span>: Planton &nbsp;<span style="color:var(--orange)">M</span>: Masă &nbsp;
+    <span style="color:var(--purple)">AP</span>: Ajutor de Post
+  </div>
+  <div class="schedule-wrap"><div id="edit-table-wrap" style="padding:16px"></div></div>
+</div>
+
+<!-- ══ VIEW ══ -->
+<div id="page-view" class="page">
+  <div class="topbar">
+    <div class="topbar-back" id="view-back-btn" onclick="showPage('page-admin')"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span class="topbar-title" id="view-title">VIZUALIZARE</span></div>
+    <div class="topbar-right">
+      <button class="btn btn-orange" style="background:var(--blue);color:#fff" id="view-word-btn" onclick="exportWord(viewingPlanId)">📄 DESCARCĂ WORD</button>
+    </div>
+  </div>
+  <div class="sched-view-wrap"><div id="view-table-wrap"></div></div>
+</div>
+
+<!-- ══ ELEVI ══ -->
+<div id="page-elevi" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="goBack()"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span class="topbar-title">GESTIONARE ELEVI</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3>COD ACTIVARE ELEVI</h3></div>
+      <div class="cod-box">
+        <div>
+          <div class="sec-label">Comunicați acest cod elevilor:</div>
+          <div class="cod-value" id="cod-display">—</div>
+        </div>
+        <div class="cod-actions">
+          <button class="btn btn-ghost" onclick="copyCod()">⧉ COPIAZĂ</button>
+          <button class="btn btn-ghost" onclick="regenerateCod()">↺ REGENEREAZĂ</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title-row"><h3>CONTURI ÎN AȘTEPTARE <span id="pending-badge" class="badge badge-orange" style="margin-left:8px"></span></h3></div>
+      <div id="pending-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title-row"><h3>CONTURI ACTIVE <span id="active-badge" class="badge badge-green" style="margin-left:8px"></span></h3></div>
+      <div id="active-list"></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ ANUNTURI ══ -->
+<div id="page-anunturi" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="goBack()"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg><span class="topbar-title">GESTIONARE ANUNȚURI</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div class="card">
+      <div class="card-title-row"><h3>ANUNȚURI <span id="anunturi-count" class="badge badge-orange" style="margin-left:8px"></span></h3><button class="btn btn-orange" onclick="openAnuntModal()">+ NOU</button></div>
+      <div id="anunturi-list"></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ ADMINS ══ -->
+<div id="page-admins" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="goBack()"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span class="topbar-title">GESTIONARE ADMINISTRATORI</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div class="card">
+      <div class="card-title-row"><h3>ÎN AȘTEPTARE <span id="admins-p-badge" class="badge badge-orange" style="margin-left:8px"></span></h3></div>
+      <div id="admins-p-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title-row"><h3>ACTIVI <span id="admins-a-badge" class="badge badge-green" style="margin-left:8px"></span></h3></div>
+      <div id="admins-a-list"></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ RAPOARTE ADMIN ══ -->
+<div id="page-rapoarte-admin" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="goBack()"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24" fill="var(--orange)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><span class="topbar-title">RAPOARTE ELEVI</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="setRFilter('all',this)">TOATE</button>
+      <button class="filter-tab" onclick="setRFilter('pending',this)">AȘTEPTARE <span id="r-pending-cnt"></span></button>
+      <button class="filter-tab" onclick="setRFilter('approved',this)">APROBATE</button>
+      <button class="filter-tab" onclick="setRFilter('rejected',this)">RESPINSE</button>
+      <button class="filter-tab" onclick="setRFilter('archived',this)">ARHIVĂ</button>
+    </div>
+    <div id="rapoarte-admin-list"></div>
+  </div></div>
+</div>
+
+<!-- ══ MODELE DOCUMENTE ══ -->
+<div id="page-modele" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="goBack()"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24" fill="var(--blue)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><span class="topbar-title">MODELE RAPOARTE</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div class="info-box">Încărcați documente model (formulare, rapoarte, cereri) pe care elevii le pot descărca. Formate acceptate: PDF, DOC, DOCX, JPG, PNG. Limită totală ~4MB.</div>
+    <div class="card">
+      <div class="card-title-row"><h3>DOCUMENTE DISPONIBILE <span id="modele-count" class="badge badge-blue" style="margin-left:8px"></span></h3></div>
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Click sau trageți fișierele aici pentru a încărca
+        <div style="font-size:10px;margin-top:6px;color:var(--text3)">PDF, DOC, DOCX, JPG, PNG — max 1MB per fișier</div>
+      </div>
+      <input type="file" id="file-input" style="display:none" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="uploadFile(this)">
+      <div id="upload-err" class="alert alert-err" style="display:none;margin-top:10px"></div>
+      <div id="modele-list" style="margin-top:14px"></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ ELEV DASHBOARD ══ -->
+<div id="page-elev" class="page">
+  <div class="topbar">
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span>PLANIFICĂRI SERVICII</span></div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="elev-username"></span>
+      <button class="btn btn-ghost" id="elev-install-btn" onclick="installPWA()" title="Instalați aplicația pe dispozitiv" style="border-color:var(--green);color:var(--green);display:none">📲 INSTALEAZĂ APP</button>
+      <button class="btn btn-ghost" onclick="showPage('page-setari-elev');initSetariElev()">⚙ SETĂRI</button>
+      <button class="btn btn-ghost" onclick="doLogout()">⏻ DECONECTARE</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="elev-nav">
+      <button class="elev-nav-btn active" onclick="setElevTab('planificari',this)">📅 PLANIFICĂRI</button>
+      <button class="elev-nav-btn" onclick="setElevTab('rapoarte',this)">📄 RAPOARTELE MELE</button>
+      <button class="elev-nav-btn" onclick="setElevTab('arhiva',this)">🗂 ARHIVĂ RAPOARTE</button>
+      <button class="elev-nav-btn" onclick="setElevTab('modele',this)">📎 MODELE DOC.</button>
+      <button class="elev-nav-btn" onclick="setElevTab('anunturi',this)">🔔 ANUNȚURI <span id="elev-anunt-badge"></span></button>
+    </div>
+
+    <div id="elev-tab-planificari">
+      <div class="vis-split">
+        <div class="card"><div class="card-title-row" style="margin-bottom:12px"><h3>📘 BĂIEȚI</h3></div><div id="elev-baieti-list"></div></div>
+        <div class="card"><div class="card-title-row" style="margin-bottom:12px"><h3>📕 FETE</h3></div><div id="elev-fete-list"></div></div>
+      </div>
+      <div class="info-box">Selectați o planificare pentru a vizualiza detaliile. Pentru întrebări, contactați administratorul.</div>
+    </div>
+
+    <div id="elev-tab-rapoarte" style="display:none">
+      <div class="card">
+        <div class="card-title-row"><h3>RAPOARTELE MELE <span id="elev-r-active-count" class="badge badge-yellow" style="margin-left:8px"></span></h3><button class="btn btn-orange" onclick="openRaportModal()">+ RAPORT NOU</button></div>
+        <div id="elev-rapoarte-list"></div>
+      </div>
+      <div class="info-box">Rapoartele aprobate sunt mutate automat în Arhivă.</div>
+    </div>
+
+    <div id="elev-tab-arhiva" style="display:none">
+      <div class="card">
+        <div class="card-title-row"><h3>ARHIVĂ PERSONALĂ <span id="elev-arhiva-count" class="badge badge-gray" style="margin-left:8px"></span></h3></div>
+        <div id="elev-arhiva-list"></div>
+      </div>
+      <div class="info-box">Toate rapoartele dvs. aprobate și finalizate sunt păstrate aici ca referință.</div>
+    </div>
+
+    <div id="elev-tab-modele" style="display:none">
+      <div class="card">
+        <div class="card-title-row"><h3>MODELE DOCUMENTE</h3></div>
+        <div id="elev-modele-list"></div>
+      </div>
+      <div class="info-box">Descărcați formularele necesare, completați-le și depuneți-le fizic sau prin raport.</div>
+    </div>
+
+    <div id="elev-tab-anunturi" style="display:none">
+      <div class="card"><div class="card-title-row"><h3>ANUNȚURI</h3></div><div id="elev-anunturi-list"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div class="modal-overlay" id="cell-modal">
+  <div class="modal">
+    <h3>EDITARE CELULĂ</h3>
+    <div id="cell-modal-info" style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:14px;padding:8px;background:var(--bg3);border-left:3px solid var(--orange)"></div>
+    <div class="svc-options" id="svc-options"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost" onclick="closeModal('cell-modal')">ANULARE</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="anunt-modal">
+  <div class="modal">
+    <h3 id="anunt-modal-title">ANUNȚ NOU</h3>
+    <div class="field"><label>TITLU</label><input class="simple-input" id="anunt-titlu" placeholder="Titlul anunțului"></div>
+    <div class="field" style="margin-top:10px"><label>CONȚINUT</label><textarea class="inp" id="anunt-body" rows="5" placeholder="Textul anunțului..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn btn-ghost" onclick="closeModal('anunt-modal')">ANULARE</button>
+      <button class="btn btn-orange" onclick="salveazaAnunt()">SALVARE</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="raport-modal">
+  <div class="modal" style="min-width:440px">
+    <h3>RAPORT NOU</h3>
+    <div class="field"><label>TIP RAPORT</label>
+      <select class="inp" id="raport-tip">
+        <option>Concediu medical</option><option>Învoire</option><option>Permisie</option><option>Misiune</option><option>Altele</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+      <div class="field"><label>DATA ÎNCEPUT</label><input type="date" class="simple-input" id="raport-start"></div>
+      <div class="field"><label>DATA SFÂRȘIT</label><input type="date" class="simple-input" id="raport-end"></div>
+    </div>
+    <div class="field" style="margin-top:10px"><label>MOTIVUL RAPORTULUI</label><textarea class="inp" id="raport-motiv" rows="4" placeholder="Descrieți motivul..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn btn-ghost" onclick="closeModal('raport-modal')">ANULARE</button>
+      <button class="btn btn-orange" onclick="submitRaport()">TRIMITE</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="raport-detail-modal">
+  <div class="modal" style="min-width:460px">
+    <h3>DETALII RAPORT</h3>
+    <div id="raport-detail-content"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px" id="raport-detail-actions"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// DB
+// ════════════════════════════════════════
+const DB={
+  get(k){try{return JSON.parse(localStorage.getItem('ps_'+k))}catch{return null}},
+  set(k,v){try{localStorage.setItem('ps_'+k,JSON.stringify(v));return true}catch(e){return false}},
+  del(k){localStorage.removeItem('ps_'+k)}
+};
+
+function initDB(){
+  if(!DB.get('users')) DB.set('users',[{id:'admin1',name:'Administrator',email:'admin@companie.ro',pass:'admin123',role:'admin',isPrincipal:true,status:'active',createdAt:'01.01.2026'}]);
+  if(!DB.get('cod')) DB.set('cod',genCod());
+  if(!DB.get('planificari')) DB.set('planificari',[]);
+  if(!DB.get('anunturi')) DB.set('anunturi',[]);
+  if(!DB.get('rapoarte')) DB.set('rapoarte',[]);
+  if(!DB.get('rapoarte_arhiva')) DB.set('rapoarte_arhiva',[]);
+  if(!DB.get('modele')) DB.set('modele',[]);
+  if(DB.get('ap_activ')==null) DB.set('ap_activ',false);
+  // AP start: băieți în ziua 1 (true=băiat prima, false=fată prima)
+  if(DB.get('ap_start')==null) DB.set('ap_start',true);
+}
+
+function genCod(){return Math.random().toString(16).slice(2,10).toUpperCase();}
+
+// ════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════
+let currentUser=null;
+
+function doLogin(){
+  const email=v('login-email').trim(),pass=v('login-pass');
+  const users=DB.get('users')||[];
+  const user=users.find(u=>u.email===email&&u.pass===pass);
+  if(!user){showErr('login-err','Email sau parolă incorectă.');return;}
+  if(user.status==='pending'){showErr('login-err','Contul este în așteptare. Contactați administratorul.');return;}
+  if(user.status==='inactive'){showErr('login-err','Contul a fost dezactivat.');return;}
+  currentUser=user; DB.set('session',user.id);
+  user.role==='admin'?goAdmin():goElev();
+}
+function doLogout(){currentUser=null;DB.del('session');showPage('page-login');}
+function restoreSession(){
+  const sid=DB.get('session'); if(!sid)return;
+  const user=(DB.get('users')||[]).find(u=>u.id===sid);
+  if(user&&user.status==='active'){currentUser=user;user.role==='admin'?goAdmin():goElev();}
+}
+
+let regTab='elev';
+function setRegTab(t){
+  regTab=t;
+  ['elev','admin'].forEach(x=>el('tab-'+x).classList.toggle('active',x===t));
+  el('reg-cod-wrap').style.display=t==='elev'?'':'none';
+  el('reg-info').textContent=t==='elev'?'Introduceți codul de activare primit de la administrator.':'Primul cont administrator va fi activat automat. Ceilalți necesită aprobare.';
+  el('reg-submit').textContent=t==='elev'?'CREARE CONT':'CREARE CONT ADMIN';
+}
+function doRegister(){
+  const name=v('reg-name').trim(),email=v('reg-email').trim(),pass=v('reg-pass'),pass2=v('reg-pass2');
+  const cod=v('reg-cod').trim().toUpperCase();
+  el('reg-err').style.display='none'; el('reg-ok').style.display='none';
+  if(!name||!email||!pass){showErr('reg-err','Completați toate câmpurile.');return;}
+  if(pass!==pass2){showErr('reg-err','Parolele nu coincid.');return;}
+  const users=DB.get('users')||[];
+  if(users.find(u=>u.email===email)){showErr('reg-err','Email-ul există deja.');return;}
+  if(regTab==='elev'){
+    const validCod=DB.get('cod');
+    const newU={id:'u'+Date.now(),name,email,pass,role:'elev',status:cod===validCod?'active':'pending',createdAt:today()};
+    users.push(newU);DB.set('users',users);
+    el('reg-ok').style.display='';
+    el('reg-ok').textContent=newU.status==='active'?'Cont creat! Vă puteți autentifica.':'Cont creat! Așteptați activarea de la administrator.';
+  } else {
+    const admins=users.filter(u=>u.role==='admin');
+    const newU={id:'u'+Date.now(),name,email,pass,role:'admin',isPrincipal:admins.length===0,status:admins.length===0?'active':'pending',createdAt:today()};
+    users.push(newU);DB.set('users',users);
+    el('reg-ok').style.display='';
+    el('reg-ok').textContent=newU.status==='active'?'Cont administrator creat!':'Cerere trimisă! Așteptați aprobarea.';
+  }
+}
+
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
+const pageHooks={'page-gen':initGen,'page-elevi':refreshElevi,'page-anunturi':refreshAnunturi,'page-admins':refreshAdmins,'page-rapoarte-admin':refreshRapoarteAdmin,'page-modele':refreshModele};
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  el(id).classList.add('active');
+  if(pageHooks[id])pageHooks[id]();
+}
+function goAdmin(){el('admin-username').textContent=currentUser.name;refreshAdminDash();showPage('page-admin');}
+function goElev(){
+  el('elev-username').textContent=currentUser.name;
+  refreshElevDash();
+  showPage('page-elev');
+  // Check if password reset is required
+  setTimeout(()=>checkMustChangePass(), 300);
+}
+function goBack(){currentUser?.role==='admin'?showPage('page-admin'):showPage('page-elev');}
+
+// ════════════════════════════════════════
+// ADMIN DASHBOARD
+// ════════════════════════════════════════
+function refreshAdminDash(){
+  const pl=DB.get('planificari')||[];
+  const users=DB.get('users')||[];
+  const rapoarte=DB.get('rapoarte')||[];
+  const pending=users.filter(u=>u.status==='pending');
+  const rPending=rapoarte.filter(r=>r.status==='pending');
+  const cod=DB.get('cod');
+  el('stat-planificari').textContent=pl.length;
+  el('stat-pending').textContent=pending.length;
+  el('stat-rapoarte').textContent=rPending.length;
+  el('stat-cod').textContent=cod;
+  el('instr-cod').textContent=cod;
+  renderAdminPlanList();
+}
+function renderAdminPlanList(){
+  const pl=DB.get('planificari')||[];
+  const listEl=el('admin-plan-list');
+  if(!pl.length){listEl.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Nu există planificări</p></div>';return;}
+  listEl.innerHTML=pl.map(p=>`
+    <div class="plan-item">
+      <div class="plan-item-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="plan-item-info">
+        <div class="plan-item-title">${p.tip.toUpperCase()} — ${LUNI[p.luna]} ${p.an}${p.apActiv?` <span class="badge badge-purple" style="margin-left:6px">AP</span>`:''}</div>
+        <div class="plan-item-meta">${p.persoane.length} persoane • ${p.createdAt}</div>
+      </div>
+      <div class="plan-item-actions">
+        <button class="icon-btn" onclick="viewPlan('${p.id}','admin')" title="Vizualizare"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="icon-btn" onclick="editPlan('${p.id}')" title="Editare"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="exportWord('${p.id}')" title="Descarcă Word">📄 WORD</button>
+        <button class="icon-btn red" onclick="deletePlan('${p.id}')" title="Ștergere"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+      </div>
+    </div>`).join('');
+}
+function deletePlan(id){
+  if(!confirm('Ștergeți planificarea?'))return;
+  DB.set('planificari',(DB.get('planificari')||[]).filter(p=>p.id!==id));
+  refreshAdminDash();
+}
+
+// ════════════════════════════════════════
+// GENERARE
+// ════════════════════════════════════════
+let genTip='baieti';
+let apActiv=false;
+
+function initGen(){
+  const yr=new Date().getFullYear();
+  el('gen-an').innerHTML=Array.from({length:31},(_,i)=>2020+i).map(y=>`<option value="${y}"${y===yr?' selected':''} >${y}</option>`).join('');
+  el('gen-an').value=yr;
+  el('gen-luna').innerHTML=LUNI.slice(1).map((l,i)=>`<option value="${i+1}">${l}</option>`).join('');
+  el('gen-luna').value=new Date().getMonth()+1;
+  el('gen-persoane').addEventListener('input',()=>{
+    const n=parsePersoane(v('gen-persoane')).length;
+    el('persoane-count').textContent=n+' persoane detectate';
+  });
+  apActiv=DB.get('ap_activ')||false;
+  el('ap-toggle').classList.toggle('on',apActiv);
+  el('ap-info').style.display=apActiv?'':'none';
+  // load saved antet
+  const saved=DB.get('last_antet')||{};
+  el('gen-grad-cmd').value=saved.gradCmd||'';
+  el('gen-nume-cmd').value=saved.numeCmd||'';
+  el('gen-grad-int').value=saved.gradInt||'';
+  el('gen-nume-int').value=saved.numeInt||'';
+  autoloadPrev();
+}
+function setTip(t){
+  genTip=t;
+  el('tip-baieti').classList.toggle('active',t==='baieti');
+  el('tip-fete').classList.toggle('active',t==='fete');
+  el('tip-desc').textContent=t==='baieti'?'Servicii zilnice: GS, P1, P2, P3, P4, M, M. Weekend: GS, P1, P2, P3, P4, M.':'Servicii zilnice: GS, P1, P2, P3, P4, M.';
+}
+function toggleAP(){
+  apActiv=!apActiv;
+  DB.set('ap_activ',apActiv);
+  el('ap-toggle').classList.toggle('on',apActiv);
+  el('ap-info').style.display=apActiv?'':'none';
+}
+function autoloadPrev(){
+  const pl=DB.get('planificari')||[];
+  if(!pl.length)return;
+  const last=pl[0];
+  const lines=last.persoane.map(p=>{
+    const entries=Object.entries(p.servicii).map(([d,s])=>`${d}-${s}`).join(', ');
+    return entries?`${p.name}: ${entries}`:'';
+  }).filter(Boolean);
+  el('gen-prev').value=lines.join('\n');
+}
+function reincarcaPrev(){autoloadPrev();}
+function togglePrevEdit(){
+  const ta=el('gen-prev');
+  ta.readOnly=!ta.readOnly;
+  ta.style.borderColor=ta.readOnly?'':'var(--orange)';
+}
+
+function getSvcList(tip,isWeekend){
+  const weMode=DB.get('weekend_mode')||'standard';
+  if(tip==='baieti'){
+    if(isWeekend) return weMode==='redus'?['GS','P1','P2','P3','P4']:['GS','P1','P2','P3','P4','M'];
+    return ['GS','P1','P2','P3','P4','M','M'];
+  }
+  return isWeekend?['GS','P1','P2','P3','P4','M']:['GS','P1','P2','P3','P4','M'];
+}
+function isWE(y,m,d){const dw=new Date(y,m-1,d).getDay();return dw===0||dw===6;}
+function getDOW(y,m,d){return new Date(y,m-1,d).getDay();}
+function daysInMonth(y,m){return new Date(y,m,0).getDate();}
+
+function genereazaPlanificare(){
+  const an=parseInt(v('gen-an')),luna=parseInt(v('gen-luna'));
+  const persoane=parsePersoane(v('gen-persoane'));
+  if(!persoane.length){showErr('gen-err','Introduceți cel puțin o persoană.');return;}
+  el('gen-err').style.display='none';
+  el('gen-err').style.cssText='';
+
+  const antet={gradCmd:v('gen-grad-cmd'),numeCmd:v('gen-nume-cmd'),gradInt:v('gen-grad-int'),numeInt:v('gen-nume-int')};
+  DB.set('last_antet',antet);
+
+  // ── Dificultate servicii (1=ușor..7=greu) ──────────────────────
+  // GS 06-22 (16h), AP 06-22 (16h), M 06-20 (14h),
+  // P3 02-04 (cel mai perturbant), P2 00-02, P4 04-06, P1 22-00
+  const DIFF={'GS':7,'AP':6,'M':5,'P3':4,'P2':3,'P4':2,'P1':1};
+
+  // Combinații INTERZISE (suma dificultăților prea mare sau prea perturbante)
+  // Regula: suma dificultăților totale ale serviciilor unui elev ≤ prag
+  // prag pentru 2 servicii: ≤10, pentru 3 servicii: ≤13
+  // Adițional: nu poți avea GS+M sau GS+AP sau M+AP (toate sunt 6h+ zi plină)
+  const HEAVY=new Set(['GS','AP','M']);
+  function comboOk(svcs){
+    const heavyCount=svcs.filter(s=>HEAVY.has(s)).length;
+    if(heavyCount>=2) return false; // max 1 serviciu "greu" per lună
+    const total=svcs.reduce((s,x)=>s+(DIFF[x]||3),0);
+    if(svcs.length===2&&total>10) return false;
+    if(svcs.length===3&&total>13) return false;
+    return true;
+  }
+
+  // Parse prev month
+  const prevLastSvc={},prevLastDay={};
+  v('gen-prev').split('\n').forEach(line=>{
+    const m=line.match(/^(.+?):\s*(.+)$/);if(!m)return;
+    const name=m[1].trim();
+    const entries=m[2].split(',').map(s=>s.trim()).filter(Boolean);
+    let maxDay=0,lastSvc='';
+    entries.forEach(e=>{const lm=e.match(/(\d+)-(\w+)/);if(lm){const d=parseInt(lm[1]);if(d>maxDay){maxDay=d;lastSvc=lm[2].toUpperCase();}}});
+    if(lastSvc){prevLastSvc[name]=lastSvc;prevLastDay[name]=maxDay;}
+  });
+
+  const N=persoane.length;
+  const zile=daysInMonth(an,luna);
+  const apOn=apActiv;
+  const minServices=2,maxServices=3,minGap=8;
+
+  // AP parity sync
+  let apStartBaiat=DB.get('ap_start')??true;
+  if(apOn){
+    const otherTip=genTip==='baieti'?'fete':'baieti';
+    const existingPl=DB.get('planificari')||[];
+    const otherPlan=existingPl.find(p=>p.tip===otherTip&&p.an===an&&p.luna===luna);
+    if(otherPlan&&otherPlan.apActiv) apStartBaiat=otherPlan.apStartBaiat;
+    DB.set('ap_start',apStartBaiat);
+  }
+
+  // Build daily slot lists
+  const daySlots=[];
+  for(let d=1;d<=zile;d++){
+    const we=isWE(an,luna,d);
+    const slots=[...getSvcList(genTip,we)];
+    if(apOn){
+      const isBaiatDay=apStartBaiat?(d%2===1):(d%2===0);
+      if((genTip==='baieti')===isBaiatDay) slots.push('AP');
+    }
+    daySlots.push(slots);
+  }
+
+  // ── Person state ────────────────────────────────────────────────
+  // pDays[i]  = sorted list of days assigned to person i
+  // pSvcs[i]  = list of services assigned to person i
+  // pLastDay[i] = last day assigned (includes prev month offset)
+  const pDays=persoane.map(()=>[]);
+  const pSvcs=persoane.map(()=>[]);  // NEW: track which services each person has
+  const pLastDay=persoane.map((name)=>{
+    const pd=prevLastDay[name];
+    return pd?-(daysInMonth(an,luna===1?12:luna-1)-pd)-1:-(minGap+10);
+  });
+
+  // ── Score function: how suitable is person i for day d with service svc? ──
+  function score(i,d,svc){
+    const gap=d-pLastDay[i];
+    if(gap<minGap) return -Infinity;           // gap too small
+    if(pDays[i].length>=maxServices) return -Infinity; // already at max
+    // Uniqueness: if person already has this service type → skip
+    if(pSvcs[i].includes(svc)) return -Infinity;
+    // Check if adding svc would create a forbidden combo
+    const futureSvcs=[...pSvcs[i],svc];
+    if(!comboOk(futureSvcs)) return -Infinity;
+    // Prev month conflict
+    if(d===1&&prevLastSvc[persoane[i]]===svc) return -Infinity;
+    // Higher score = fewer services so far + more rested + lighter service
+    const restBonus=Math.min(gap-minGap,20)*3;
+    const countBonus=(maxServices-pDays[i].length)*80;
+    const diffBonus=(8-(DIFF[svc]||4))*5; // prefer lighter services slightly
+    return restBonus+countBonus+diffBonus;
+  }
+
+  // ── FAZA 1: Alocare zi cu zi ─────────────────────────────────────
+  const assignments=[];
+
+  for(let d=1;d<=zile;d++){
+    const slots=daySlots[d-1];
+    const dayAssign=[];
+    const usedToday=new Set();
+
+    // Sort slots: assign harder services first (GS, AP, M)
+    // so the algorithm has more candidates when it matters
+    const slotsOrdered=[...slots].sort((a,b)=>(DIFF[b]||3)-(DIFF[a]||3));
+
+    slotsOrdered.forEach(svc=>{
+      let best=-1,bestScore=-Infinity;
+      for(let i=0;i<N;i++){
+        if(usedToday.has(i)) continue;
+        const s=score(i,d,svc);
+        if(s>bestScore){bestScore=s;best=i;}
+      }
+
+      // Relaxed fallback: allow duplicate service if no unique candidate
+      if(best===-1){
+        for(let i=0;i<N;i++){
+          if(usedToday.has(i)) continue;
+          const gap=d-pLastDay[i];
+          if(gap<minGap) continue;
+          if(pDays[i].length>=maxServices) continue;
+          if(d===1&&prevLastSvc[persoane[i]]===svc) continue;
+          const futureSvcs=[...pSvcs[i],svc];
+          if(!comboOk(futureSvcs)) continue;
+          // Allow even if already has this service (relaxed uniqueness)
+          const s=(maxServices-pDays[i].length)*60+Math.min(gap-minGap,20)*2;
+          if(s>bestScore){bestScore=s;best=i;}
+        }
+      }
+
+      // Last resort: ignore combo check, just fill the slot
+      if(best===-1){
+        for(let i=0;i<N;i++){
+          if(usedToday.has(i)) continue;
+          const gap=d-pLastDay[i];
+          if(gap<minGap) continue;
+          if(pDays[i].length>=maxServices) continue;
+          const s=(maxServices-pDays[i].length)*40+(gap-minGap);
+          if(s>bestScore){bestScore=s;best=i;}
+        }
+      }
+
+      if(best!==-1){
+        dayAssign.push({persIdx:best,svc});
+        usedToday.add(best);
+        pDays[best].push(d);
+        pSvcs[best].push(svc);
+        pLastDay[best]=d;
+      }
+    });
+
+    assignments.push(dayAssign);
+  }
+
+  // ── FAZA 2: Garantează minim 2 servicii per persoană ─────────────
+  const underserved=persoane.map((_,i)=>i).filter(i=>pDays[i].length<minServices);
+
+  underserved.forEach(ui=>{
+    const needed=minServices-pDays[ui].length;
+    let inserted=0;
+
+    for(let attempt=0;attempt<needed*4&&inserted<needed;attempt++){
+      let bestDay=-1,bestSi=-1,bestFromIdx=-1,bestSc=-Infinity;
+
+      for(let d=1;d<=zile&&bestSc<500;d++){
+        const gapBefore=d-pLastDay[ui];
+        if(gapBefore<minGap) continue;
+        const nextDay=pDays[ui].find(x=>x>d);
+        if(nextDay&&nextDay-d<minGap) continue;
+
+        for(let si=0;si<assignments[d-1].length;si++){
+          const a=assignments[d-1][si];
+          if(pDays[a.persIdx].length<=minServices) continue; // only steal from those with 3
+          // Can ui take this service?
+          const svc=a.svc;
+          if(pSvcs[ui].includes(svc)) continue; // uniqueness
+          const futureSvcs=[...pSvcs[ui],svc];
+          if(!comboOk(futureSvcs)) continue;
+          const sc=(minServices-pDays[ui].length)*200+gapBefore;
+          if(sc>bestSc){bestSc=sc;bestDay=d;bestSi=si;bestFromIdx=a.persIdx;}
+        }
+      }
+
+      if(bestDay!==-1){
+        const a=assignments[bestDay-1][bestSi];
+        const oldIdx=a.persIdx;
+        const oldSvc=a.svc;
+        a.persIdx=ui;
+        // Update old person
+        pDays[oldIdx]=pDays[oldIdx].filter(x=>x!==bestDay);
+        pSvcs[oldIdx]=pSvcs[oldIdx].filter(x=>x!==oldSvc);
+        pLastDay[oldIdx]=pDays[oldIdx].length?Math.max(...pDays[oldIdx]):-(minGap+10);
+        // Update new person
+        pDays[ui].push(bestDay);pDays[ui].sort((a,b)=>a-b);
+        pSvcs[ui].push(a.svc);
+        pLastDay[ui]=Math.max(...pDays[ui]);
+        inserted++;
+      }
+    }
+
+    // Ultimă soluție: adaugă slot extra M dacă tot nu are minim
+    if(pDays[ui].length<minServices){
+      for(let d=1;d<=zile&&pDays[ui].length<minServices;d++){
+        if(d-pLastDay[ui]<minGap) continue;
+        const nextDay=pDays[ui].find(x=>x>d);
+        if(nextDay&&nextDay-d<minGap) continue;
+        if(assignments[d-1].some(a=>a.persIdx===ui)) continue;
+        const svcToAdd=pSvcs[ui].includes('M')?'P1':'M';
+        assignments[d-1].push({persIdx:ui,svc:svcToAdd});
+        pDays[ui].push(d);pDays[ui].sort((a,b)=>a-b);
+        pSvcs[ui].push(svcToAdd);
+        pLastDay[ui]=Math.max(...pDays[ui]);
+      }
+    }
+  });
+
+  // ── FAZA 3: Construiește svcData ──────────────────────────────────
+  const svcData=persoane.map((name,idx)=>({name,idx,servicii:{}}));
+  assignments.forEach((dayAssign,di)=>{
+    const d=di+1;
+    dayAssign.forEach(a=>{
+      svcData[a.persIdx].servicii[d]=a.svc.replace('*','');
+    });
+  });
+
+  // ── Stats ──────────────────────────────────────────────────────────
+  const noSvc=pDays.filter(d=>d.length===0).length;
+  const underSvc=pDays.filter(d=>d.length>0&&d.length<minServices).length;
+
+  const plan={
+    id:'p'+Date.now(),tip:genTip,an,luna,persoane:svcData,antet,
+    apActiv:apOn,apStartBaiat,createdAt:today()
+  };
+  const pl=DB.get('planificari')||[];
+  pl.unshift(plan);DB.set('planificari',pl);
+
+  if(noSvc>0||underSvc>0){
+    el('gen-err').style.display='';
+    el('gen-err').style.cssText='padding:10px 14px;font-family:var(--mono);font-size:11px;margin-bottom:14px;background:var(--yd);border:1px solid var(--yellow);color:var(--yellow)';
+    el('gen-err').textContent=`⚠ ${noSvc>0?noSvc+' persoane fără niciun serviciu. ':''}`+
+      `${underSvc>0?underSvc+' persoane cu sub 2 servicii. ':''}`+
+      `Constrângerile (min 8 zile, combo echilibrat) nu permit distribuție perfectă. Editați manual.`;
+  }
+
+  editPlan(plan.id);
+}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function parsePersoane(txt){return txt.split(/[\n,]/).map(s=>s.trim()).filter(Boolean);}
+
+// ════════════════════════════════════════
+// EDITARE
+// ════════════════════════════════════════
+let editingPlanId=null;
+function editPlan(id){
+  editingPlanId=id;
+  const plan=getPlan(id);if(!plan)return;
+  el('edit-title').textContent=`EDITARE: ${plan.tip.toUpperCase()} — ${LUNI[plan.luna]} ${plan.an}`;
+  el('edit-grad-cmd').value=plan.antet?.gradCmd||'';
+  el('edit-nume-cmd').value=plan.antet?.numeCmd||'';
+  el('edit-grad-int').value=plan.antet?.gradInt||'';
+  el('edit-nume-int').value=plan.antet?.numeInt||'';
+  renderEditTable(plan);showPage('page-edit');
+}
+function renderEditTable(plan){el('edit-table-wrap').innerHTML=buildTable(plan,true);}
+
+function buildTable(plan,editable){
+  const zile=daysInMonth(plan.an,plan.luna);
+  const DN=['Du','Lu','Ma','Mi','Jo','Vi','Sâ'];
+  let cols=`<th class="nr-col">Nr.</th><th class="name-col">NUME PRENUMELE</th>`;
+  for(let d=1;d<=zile;d++){
+    const dw=getDOW(plan.an,plan.luna,d);
+    const we=dw===0||dw===6;
+    const dayCls=dw===5?'th-vineri':dw===6?'th-sambata':dw===0?'th-duminica':(we?'weekend-header':'');
+    cols+=`<th class="${dayCls}"><div class="day-header"><span class="day-name">${DN[dw]}</span><span class="day-num">${d}</span></div></th>`;
+  }
+  cols+=`<th style="min-width:40px">OBS</th>`;
+  const rows=plan.persoane.map((p,idx)=>{
+    let cells=`<td class="nr-cell">${idx+1}</td><td class="name-cell">${p.name}</td>`;
+    for(let d=1;d<=zile;d++){
+      const dw=getDOW(plan.an,plan.luna,d);
+      const we=dw===0||dw===6;
+      const colCls=dw===5?'col-vineri':dw===6?'col-sambata':dw===0?'col-duminica':(we?'weekend-col':'');
+      const svc=p.servicii[d]||'';
+      const isAP=svc==='AP';
+      if(editable){
+        cells+=`<td class="svc-cell ${colCls} ${!svc?'empty-c':''} ${isAP?'ap-cell':''}" onclick="openCellModal('${plan.id}',${idx},${d})" title="${p.name}, Ziua ${d}">${svc||'·'}</td>`;
+      } else {
+        cells+=`<td class="${colCls}" style="color:${isAP?'var(--purple)':'var(--orange)'};font-weight:bold;font-size:11px;text-align:center">${svc}</td>`;
+      }
+    }
+    cells+=`<td></td>`;
+    return `<tr>${cells}</tr>`;
+  }).join('');
+  return `<table class="schedule-table"><thead><tr>${cols}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+let cellEdit={planId:'',persIdx:0,day:0};
+function openCellModal(planId,persIdx,day){
+  cellEdit={planId,persIdx,day};
+  const plan=getPlan(planId);
+  const pers=plan.persoane[persIdx];
+  el('cell-modal-info').innerHTML=`<strong>${pers.name}</strong> — Ziua <strong>${day}</strong> (${['Duminică','Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă'][getDOW(plan.an,plan.luna,day)]})`;
+  const we=isWE(plan.an,plan.luna,day);
+  const svcs=getSvcList(plan.tip,we);
+  const current=pers.servicii[day]||'';
+  const unique=[...new Set(svcs)];
+  let opts=unique.map(s=>`<div class="svc-opt ${current===s?'selected':''}" onclick="setCellSvc('${s}')">${s}</div>`).join('');
+  if(plan.apActiv){
+    // Check if this day is an AP day for this tip
+    const isBaiatDay=plan.apStartBaiat?(day%2===1):(day%2===0);
+    const isAPDay=(plan.tip==='baieti')===isBaiatDay;
+    if(isAPDay){
+      opts+=`<div class="svc-opt ap-opt ${current==='AP'?'selected':''}" onclick="setCellSvc('AP')">AP</div>`;
+    }
+  }
+  opts+=`<div class="svc-opt clear" onclick="setCellSvc('')">✕ ȘTERGE</div>`;
+  el('svc-options').innerHTML=opts;
+  el('cell-modal').classList.add('open');
+}
+function setCellSvc(svc){
+  const pl=DB.get('planificari')||[];
+  const plan=pl.find(p=>p.id===cellEdit.planId);
+  if(svc) plan.persoane[cellEdit.persIdx].servicii[cellEdit.day]=svc;
+  else delete plan.persoane[cellEdit.persIdx].servicii[cellEdit.day];
+  DB.set('planificari',pl);
+  renderEditTable(plan);closeModal('cell-modal');
+}
+function salveazaPlanificare(){
+  const pl=DB.get('planificari')||[];
+  const plan=pl.find(p=>p.id===editingPlanId);if(!plan)return;
+  plan.antet={gradCmd:v('edit-grad-cmd'),numeCmd:v('edit-nume-cmd'),gradInt:v('edit-grad-int'),numeInt:v('edit-nume-int')};
+  DB.set('planificari',pl);refreshAdminDash();showPage('page-admin');
+}
+function previzualizeaza(){viewPlan(editingPlanId,'admin');}
+
+// ════════════════════════════════════════
+// VIEW
+// ════════════════════════════════════════
+let viewingPlanId=null;
+function viewPlan(id,from){
+  viewingPlanId=id;
+  const plan=getPlan(id);if(!plan)return;
+  el('view-title').textContent=`${plan.tip.toUpperCase()} — ${LUNI[plan.luna]} ${plan.an}`;
+  el('view-back-btn').onclick=from==='admin'?()=>showPage('page-admin'):()=>showPage('page-elev');
+  renderViewTable(plan);
+  showPage('page-view');
+}
+
+// ════════════════════════════════════════
+// EXPORT WORD — format identic cu imaginile
+// ════════════════════════════════════════
+function exportWord(id){
+  const plan=getPlan(id);if(!plan){alert('Planificarea nu a fost găsită.');return;}
+  const a=plan.antet||{};
+  const an=plan.an,luna=plan.luna,tip=plan.tip;
+  const zile=daysInMonth(an,luna);
+  const DN_RO=['D','L','M','M','J','V','S'];
+  const lunaStr=LUNI[luna].toUpperCase();
+  const perioadaStr=`01.${String(luna).padStart(2,'0')}.${an}-${String(zile).padStart(2,'0')}.${String(luna).padStart(2,'0')}.${an}`;
+  const tipStr=tip==='baieti'?'BĂIEȚI':'FETE';
+
+  // Build RTF mimicking the Word document exactly
+  // Colors: blue border = \red0\green70\blue127 (dark blue like in image)
+  // Red text for services = \red192\green0\blue0
+  // Weekend bg = light blue tint = noted as shading
+  // We use RTF table with cell borders
+
+  const COL_NR=400; // twips for Nr
+  const COL_NAME=1600; // twips for name
+  const COL_DAY=240; // twips per day column
+  const COL_OBS=400;
+  const TOTAL=COL_NR+COL_NAME+(zile*COL_DAY)+COL_OBS;
+  const PAGE_W=15840; const PAGE_H=12240; // landscape A4
+  const MARG=360;
+
+  function cell(txt,opts={}){
+    const {bold=false,red=false,purple=false,center=false,shade=false,small=false,clrTxt=false}=opts;
+    const bdr=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1 \\clbrdrl\\brdrs\\brdrw5\\brdrcf1 \\clbrdrb\\brdrs\\brdrw5\\brdrcf1 \\clbrdrr\\brdrs\\brdrw5\\brdrcf1`;
+    const shd=shade?`\\clshdng500\\clcbpat9`:``; // light blue shade
+    return `${bdr}${shd}`;
+  }
+
+  // Build RTF
+  let rtf=`{\\rtf1\\ansi\\deff0
+{\\fonttbl{\\f0 Arial;}{\\f1 Arial;}}
+{\\colortbl;\\red0\\green70\\blue127;\\red192\\green0\\blue0;\\red0\\green0\\blue0;\\red204\\green229\\blue255;\\red156\\green39\\blue176;}
+{\\info{\\title Planificare Servicii}}
+\\paperw${PAGE_W}\\paperh${PAGE_H}\\lndscpsxn
+\\margl${MARG}\\margr${MARG}\\margt${MARG}\\margb${MARG}
+
+`;
+
+  // HEADER — 3-column layout
+  rtf+=`{\\pard\\qc\\f0\\b\\fs22\\cf3 PLANIFICARE SERVICII\\par}
+{\\pard\\qc\\f0\\b\\fs22\\cf1 COMPANIA 1, ${tipStr}\\par}
+{\\pard\\qc\\f0\\fs18\\cf3 ${perioadaStr}\\par}
+\\pard\\par
+`;
+
+  // We use a table for the header area: left=company info, right=APROBAT
+  rtf+=`\\trowd\\trqc
+\\cellx${Math.floor(TOTAL/2)}
+\\cellx${TOTAL}
+\\pard\\intbl\\qc\\b\\f0\\fs18\\cf3 \\cell
+\\pard\\intbl\\qc\\b\\f0\\fs18\\cf3 APROBAT\\par
+{\\pard\\intbl\\qc\\b0\\f0\\fs16\\cf3 p. COMANDANTUL COMPANIEI I ELEVI\\par}
+{\\pard\\intbl\\qc\\f0\\fs16\\cf3 ${a.gradCmd||''}\\par}
+{\\pard\\intbl\\qc\\b\\f0\\fs18\\cf1 ${a.numeCmd||''}\\par}
+\\cell
+\\row
+`;
+
+  rtf+=`\\pard\\par\\par`;
+
+  // TABLE HEADER ROW 1 — day names and numbers
+  // Build column spec
+  let colSpec=`\\trowd\\trqc\\trhdr`;
+  let pos=0;
+  pos+=COL_NR; colSpec+=`\\clbrdrt\\brdrs\\brdrw10\\brdrcf1\\clbrdrl\\brdrs\\brdrw10\\brdrcf1\\clbrdrb\\brdrs\\brdrw10\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${pos}`;
+  pos+=COL_NAME; colSpec+=`\\clbrdrt\\brdrs\\brdrw10\\brdrcf1\\clbrdrl\\brdrs\\brdrw10\\brdrcf1\\clbrdrb\\brdrs\\brdrw10\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${pos}`;
+  for(let d=1;d<=zile;d++){
+    const we=isWE(an,luna,d);
+    const shd=we?`\\clshdng1000\\clcbpat4`:'';
+    pos+=COL_DAY; colSpec+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw5\\brdrcf1${shd}\\cellx${pos}`;
+  }
+  pos+=COL_OBS; colSpec+=`\\clbrdrt\\brdrs\\brdrw10\\brdrcf1\\clbrdrl\\brdrs\\brdrw10\\brdrcf1\\clbrdrb\\brdrs\\brdrw10\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${pos}`;
+
+  // Header row — Nr/NUMELE + days + OBS
+  rtf+=colSpec;
+  rtf+=`\\pard\\intbl\\qc\\b\\f0\\fs14\\cf3 Nr.crt\\cell`;
+  rtf+=`\\pard\\intbl\\ql\\b\\f0\\fs14\\cf3 NUMELE\\par PRENUMELE\\cell`;
+  for(let d=1;d<=zile;d++){
+    const dw=getDOW(an,luna,d);
+    const dn=DN_RO[dw];
+    const we=isWE(an,luna,d);
+    const c=we?`\\cf1`:`\\cf3`;
+    rtf+=`\\pard\\intbl\\qc\\b\\f0\\fs12${c} ${dn}\\par ${String(d).padStart(2,'0')}\\cell`;
+  }
+  rtf+=`\\pard\\intbl\\qc\\b\\f0\\fs14\\cf3 obs\\cell\\row\n`;
+
+  // DATA ROWS
+  plan.persoane.forEach((pers,idx)=>{
+    // rebuild col spec for data rows (same widths)
+    let dcs=`\\trowd\\trqc`;
+    let p2=0;
+    p2+=COL_NR; dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw10\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw5\\brdrcf1\\cellx${p2}`;
+    p2+=COL_NAME; dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${p2}`;
+    for(let d=1;d<=zile;d++){
+      const we=isWE(an,luna,d);
+      const dow2=getDOW(an,luna,d);
+      const shdColor=dow2===5?8:dow2===6?9:dow2===0?10:0; // 8=yellow,9=orange,10=red palette approx
+      const shd=we?(dow2===0?`\\clshdng500\\clcbpat10`:dow2===6?`\\clshdng500\\clcbpat9`:`\\clshdng500\\clcbpat4`):'';
+      p2+=COL_DAY; dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw5\\brdrcf1${shd}\\cellx${p2}`;
+    }
+    p2+=COL_OBS; dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${p2}`;
+    rtf+=dcs;
+    rtf+=`\\pard\\intbl\\qc\\f0\\fs14\\cf3 ${idx+1}.\\cell`;
+    // Name — underlined and red if needed (matching image style)
+    rtf+=`\\pard\\intbl\\ql\\f0\\fs14\\ul\\cf2 ${pers.name}\\ulnone\\cf3\\cell`;
+    for(let d=1;d<=zile;d++){
+      const svc=pers.servicii[d]||'';
+      const isAP=svc==='AP';
+      const cf=svc?(isAP?`\\cf5`:`\\cf2`):`\\cf3`;
+      rtf+=`\\pard\\intbl\\qc\\b\\f0\\fs14${cf} ${svc||''}\\b0\\cf3\\cell`;
+    }
+    rtf+=`\\pard\\intbl\\cell\\row\n`;
+  });
+
+  // Empty rows at bottom
+  for(let i=0;i<3;i++){
+    let dcs=`\\trowd\\trqc`;
+    let p2=0;
+    p2+=COL_NR; dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw10\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw5\\brdrcf1\\cellx${p2}`;
+    p2+=COL_NAME; dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${p2}`;
+    for(let d=1;d<=zile;d++){const we=isWE(an,luna,d);const shd=we?`\\clshdng1000\\clcbpat4`:'';p2+=COL_DAY;dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw5\\brdrcf1${shd}\\cellx${p2}`;}
+    p2+=COL_OBS;dcs+=`\\clbrdrt\\brdrs\\brdrw5\\brdrcf1\\clbrdrl\\brdrs\\brdrw5\\brdrcf1\\clbrdrb\\brdrs\\brdrw5\\brdrcf1\\clbrdrr\\brdrs\\brdrw10\\brdrcf1\\cellx${p2}`;
+    rtf+=dcs+`\\pard\\intbl\\cell\\pard\\intbl\\cell`;
+    for(let d=0;d<zile;d++)rtf+=`\\pard\\intbl\\cell`;
+    rtf+=`\\pard\\intbl\\cell\\row\n`;
+  }
+
+  rtf+=`\\pard\\par`;
+
+  // LEGENDA
+  rtf+=`{\\pard\\f0\\b\\fs16\\cf3 Legenda:\\par}
+{\\pard\\f0\\fs14\\cf3 GS: Gradat de serviciu pe subunitate\\par}
+{\\pard\\f0\\fs14\\cf3 P: Planton schimbul...\\par}
+{\\pard\\f0\\fs14\\cf3 M: Serviciu popasă/Sector masă\\par}`;
+  if(plan.apActiv){rtf+=`{\\pard\\f0\\fs14\\cf5 AP: Ajutor de Post\\par}`;}
+  rtf+=`{\\pard\\f0\\fs14\\cf3 Notă: Orice schimbare de serviciu se aprobă de către comandantul companiei/administratorul de subunitate.\\par}
+{\\pard\\f0\\fs14\\cf3 Serviciile se încep cu data de 20 a lunii și se afișează până la data de 25 a lunii în curs.\\par}
+\\pard\\par`;
+
+  // SIGNATURE
+  rtf+=`\\trowd\\trqc
+\\cellx${Math.floor(TOTAL*0.55)}
+\\cellx${TOTAL}
+\\pard\\intbl\\ql\\f0\\fs14\\cf3 \\cell
+\\pard\\intbl\\qc\\f0\\fs14\\cf3 Întocmit,\\par
+Administrator Compania I\\par
+{\\b\\cf2 ${a.gradInt||''} ${a.numeInt||''}}\\par\\cell
+\\row
+`;
+
+  rtf+=`}`;
+
+  // Download
+  const blob=new Blob([rtf],{type:'application/rtf'});
+  const url=URL.createObjectURL(blob);
+  const a2=document.createElement('a');
+  a2.href=url;
+  const fname=`Planificare_${tipStr}_${LUNI[luna]}_${an}.doc`;
+  a2.download=fname;
+  document.body.appendChild(a2);a2.click();document.body.removeChild(a2);
+  URL.revokeObjectURL(url);
+}
+
+// ════════════════════════════════════════
+// ELEVI
+// ════════════════════════════════════════
+function refreshElevi(){
+  const users=DB.get('users')||[];
+  const elevi=users.filter(u=>u.role==='elev');
+  const pending=elevi.filter(u=>u.status==='pending');
+  const active=elevi.filter(u=>u.status==='active');
+  const cod=DB.get('cod');
+  el('cod-display').textContent=cod;
+  el('pending-badge').textContent=pending.length;
+  el('active-badge').textContent=active.length;
+  el('pending-list').innerHTML=pending.length?pending.map(u=>`
+    <div class="person-item">
+      <div class="person-avatar">${u.name[0].toUpperCase()}</div>
+      <div class="person-info"><div class="person-name">${u.name}</div><div class="person-email">${u.email}</div></div>
+      <div class="person-actions">
+        <button class="btn btn-green" onclick="approveUser('${u.id}')">✓ APROBĂ</button>
+        <button class="icon-btn red" onclick="deleteUser('${u.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+      </div>
+    </div>`).join(''):'<div class="empty"><p>Niciun cont în așteptare</p></div>';
+  el('active-list').innerHTML=active.length?active.map(u=>`
+    <div class="person-item">
+      <div class="person-avatar" style="border-color:var(--green);color:var(--green)">${u.name[0].toUpperCase()}</div>
+      <div class="person-info"><div class="person-name">${u.name}</div><div class="person-email">${u.email}</div></div>
+      <div class="person-actions">
+        <button class="btn btn-ghost" onclick="resetParolaElev('${u.id}','${u.name}')">🔑 RESETEAZĂ PAROLA</button>
+        <button class="btn btn-ghost" onclick="deactivateUser('${u.id}')">DEZACTIVEAZĂ</button>
+        <button class="icon-btn red" onclick="deleteUser('${u.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+      </div>
+    </div>`).join(''):'<div class="empty"><p>Niciun elev activ</p></div>';
+}
+function approveUser(id){mutUser(id,'active');refreshElevi();refreshAdminDash();}
+function deactivateUser(id){mutUser(id,'inactive');refreshElevi();}
+function deleteUser(id){if(!confirm('Ștergeți?'))return;DB.set('users',(DB.get('users')||[]).filter(u=>u.id!==id));refreshElevi();refreshAdminDash();}
+function mutUser(id,status){const users=DB.get('users')||[];const u=users.find(u=>u.id===id);if(u)u.status=status;DB.set('users',users);}
+function copyCod(){navigator.clipboard.writeText(DB.get('cod'));alert('Cod copiat!');}
+function regenerateCod(){DB.set('cod',genCod());refreshElevi();refreshAdminDash();}
+
+// ════════════════════════════════════════
+// ANUNTURI
+// ════════════════════════════════════════
+let editingAnuntId=null;
+function refreshAnunturi(){
+  const anunturi=DB.get('anunturi')||[];
+  el('anunturi-count').textContent=anunturi.length;
+  el('anunturi-list').innerHTML=anunturi.length?anunturi.map(a=>`
+    <div class="anunt-item">
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+        <div class="anunt-title">${a.titlu}</div>
+        <div style="display:flex;gap:6px">
+          <button class="icon-btn" onclick="editAnunt('${a.id}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="icon-btn red" onclick="deleteAnunt('${a.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+        </div>
+      </div>
+      <div class="anunt-body">${a.body}</div>
+      <div class="anunt-meta">✕ ${a.author} · ${a.date}</div>
+    </div>`).join(''):'<div class="empty"><p>Niciun anunț</p></div>';
+}
+function openAnuntModal(id){
+  editingAnuntId=id||null;
+  const a=id?(DB.get('anunturi')||[]).find(x=>x.id===id):null;
+  el('anunt-modal-title').textContent=id?'EDITARE ANUNȚ':'ANUNȚ NOU';
+  el('anunt-titlu').value=a?a.titlu:'';
+  el('anunt-body').value=a?a.body:'';
+  el('anunt-modal').classList.add('open');
+}
+function editAnunt(id){openAnuntModal(id);}
+function salveazaAnunt(){
+  const titlu=v('anunt-titlu').trim(),body=v('anunt-body').trim();
+  if(!titlu)return;
+  const anunturi=DB.get('anunturi')||[];
+  if(editingAnuntId){const a=anunturi.find(x=>x.id===editingAnuntId);if(a){a.titlu=titlu;a.body=body;}}
+  else anunturi.unshift({id:'a'+Date.now(),titlu,body,author:currentUser?.name||'Admin',date:today()});
+  DB.set('anunturi',anunturi);closeModal('anunt-modal');refreshAnunturi();refreshAdminDash();
+}
+function deleteAnunt(id){if(!confirm('Ștergeți anunțul?'))return;DB.set('anunturi',(DB.get('anunturi')||[]).filter(a=>a.id!==id));refreshAnunturi();refreshAdminDash();}
+
+// ════════════════════════════════════════
+// ADMINS
+// ════════════════════════════════════════
+function refreshAdmins(){
+  const users=DB.get('users')||[];
+  const admins=users.filter(u=>u.role==='admin');
+  const pending=admins.filter(u=>u.status==='pending');
+  const active=admins.filter(u=>u.status==='active');
+  el('admins-p-badge').textContent=pending.length;
+  el('admins-a-badge').textContent=active.length;
+  el('admins-p-list').innerHTML=pending.length?pending.map(u=>`
+    <div class="person-item">
+      <div class="person-avatar" style="color:var(--orange);border-color:var(--orange)">${u.name[0]}</div>
+      <div class="person-info"><div class="person-name">${u.name}</div><div class="person-email">${u.email}</div></div>
+      <div class="person-actions">
+        <button class="btn btn-green" onclick="approveAdmin('${u.id}')">✓ APROBĂ</button>
+        <button class="icon-btn red" onclick="deleteUser('${u.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+      </div>
+    </div>`).join(''):'<div class="empty"><p>Niciun admin în așteptare</p></div>';
+  el('admins-a-list').innerHTML=active.map(u=>`
+    <div class="person-item">
+      <div class="person-avatar" style="border-color:${u.isPrincipal?'var(--orange)':'var(--green)'}">${u.isPrincipal?'👑':u.name[0]}</div>
+      <div class="person-info">
+        <div class="person-name">${u.name} ${u.isPrincipal?'<span class="badge badge-orange" style="margin-left:6px">PRINCIPAL</span>':''} ${u.id===currentUser?.id?'<span class="badge badge-gray" style="margin-left:4px">TU</span>':''}</div>
+        <div class="person-email">${u.email} · ${u.createdAt}</div>
+      </div>
+    </div>`).join('');
+}
+function approveAdmin(id){mutUser(id,'active');refreshAdmins();refreshAdminDash();}
+
+// ════════════════════════════════════════
+// RAPOARTE ADMIN
+// ════════════════════════════════════════
+let rFilter='all';
+function setRFilter(f,btn){rFilter=f;document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');refreshRapoarteAdmin();}
+function refreshRapoarteAdmin(){
+  const rapoarte=DB.get('rapoarte')||[];
+  const arhiva=DB.get('rapoarte_arhiva')||[];
+  const pending=rapoarte.filter(r=>r.status==='pending');
+  el('r-pending-cnt').textContent=pending.length?`(${pending.length})`:'';
+  el('stat-rapoarte').textContent=pending.length;
+  let items=rFilter==='archived'?arhiva:rFilter==='all'?[...rapoarte]:(rapoarte.filter(r=>r.status===rFilter));
+  const listEl=el('rapoarte-admin-list');
+  const sBadge={pending:'badge-yellow',approved:'badge-green',rejected:'badge-red',archived:'badge-gray'};
+  const sLabel={pending:'ÎN AȘTEPTARE',approved:'APROBAT',rejected:'RESPINS',archived:'ARHIVAT'};
+  listEl.innerHTML=items.length?items.map(r=>`
+    <div class="raport-item">
+      <div class="raport-header">
+        <div><span class="raport-name">${r.userName}</span> <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px">${r.tip}</span></div>
+        <span class="badge ${sBadge[r.status]}">${sLabel[r.status]}</span>
+      </div>
+      <div class="raport-motiv">${r.motiv}</div>
+      <div class="raport-meta">
+        <span>📅 ${fmtDate(r.start)} → ${fmtDate(r.end)}</span>
+        <span>Depus: ${r.createdAt}</span>
+        ${r.updatedAt?`<span>Actualizat: ${r.updatedAt}</span>`:''}
+      </div>
+      ${r.status==='pending'?`
+      <div class="raport-actions">
+        <button class="btn btn-green" onclick="actionRaport('${r.id}','approved')">✓ APROBĂ</button>
+        <button class="btn btn-red" onclick="actionRaport('${r.id}','rejected')">✕ RESPINGE</button>
+        <button class="btn btn-ghost" onclick="viewRaportDetail('${r.id}')">DETALII</button>
+      </div>`:`
+      <div class="raport-actions">
+        <button class="btn btn-ghost" onclick="viewRaportDetail('${r.id}')">DETALII</button>
+        ${r.status==='approved'&&rFilter!=='archived'?`<button class="btn btn-ghost" onclick="archiveRaport('${r.id}')">📁 ARHIVEAZĂ</button>`:''}
+      </div>`}
+    </div>`).join(''):'<div class="empty"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><p>Nu există rapoarte</p></div>';
+}
+function actionRaport(id,status){
+  const note=status==='rejected'?prompt('Notă pentru elev (opțional):'):'';
+  const rapoarte=DB.get('rapoarte')||[];
+  const r=rapoarte.find(x=>x.id===id);if(!r)return;
+  r.status=status;r.updatedAt=today();r.adminNote=note||'';
+  DB.set('rapoarte',rapoarte);
+  if(status==='approved') setTimeout(()=>archiveRaport(id),3000);
+  refreshRapoarteAdmin();
+}
+function archiveRaport(id){
+  const rapoarte=DB.get('rapoarte')||[];
+  const idx=rapoarte.findIndex(x=>x.id===id);if(idx===-1)return;
+  const [removed]=rapoarte.splice(idx,1);
+  removed.stareInainte=removed.status; // save original state before archiving
+  removed.status='archived';
+  const arhiva=DB.get('rapoarte_arhiva')||[];
+  arhiva.unshift(removed);
+  DB.set('rapoarte_arhiva',arhiva);DB.set('rapoarte',rapoarte);
+  refreshRapoarteAdmin();refreshAdminDash();
+}
+function viewRaportDetail(id){
+  const all=[...DB.get('rapoarte')||[],...DB.get('rapoarte_arhiva')||[]];
+  const r=all.find(x=>x.id===id);if(!r)return;
+  const sL={pending:'ÎN AȘTEPTARE',approved:'APROBAT',rejected:'RESPINS',archived:'ARHIVAT'};
+  const sBadge={pending:'badge-yellow',approved:'badge-green',rejected:'badge-red',archived:'badge-gray'};
+  el('raport-detail-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div><div class="sec-label">ELEV</div><div style="font-family:var(--mono)">${r.userName}</div></div>
+      <div><div class="sec-label">TIP</div><div style="font-family:var(--mono)">${r.tip}</div></div>
+      <div><div class="sec-label">PERIOADĂ</div><div style="font-family:var(--mono)">${fmtDate(r.start)} → ${fmtDate(r.end)}</div></div>
+      <div><div class="sec-label">STATUS</div><span class="badge ${sBadge[r.status]}">${sL[r.status]}</span></div>
+    </div>
+    <div class="sec-label">MOTIV</div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text2);padding:10px;background:var(--bg3);margin-bottom:12px;line-height:1.6">${r.motiv}</div>
+    ${r.adminNote?`<div class="sec-label">NOTĂ ADMIN</div><div style="font-family:var(--mono);font-size:11px;color:var(--text2);padding:10px;background:var(--bg3);border-left:3px solid var(--orange)">${r.adminNote}</div>`:''}
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:10px">Depus: ${r.createdAt}${r.updatedAt?' | Actualizat: '+r.updatedAt:''}</div>`;
+  el('raport-detail-actions').innerHTML=r.status==='pending'?`
+    <button class="btn btn-ghost" onclick="closeModal('raport-detail-modal')">ÎNCHIDE</button>
+    <button class="btn btn-red" onclick="closeModal('raport-detail-modal');actionRaport('${r.id}','rejected')">✕ RESPINGE</button>
+    <button class="btn btn-green" onclick="closeModal('raport-detail-modal');actionRaport('${r.id}','approved')">✓ APROBĂ</button>`:
+    `<button class="btn btn-ghost" onclick="closeModal('raport-detail-modal')">ÎNCHIDE</button>`;
+  el('raport-detail-modal').classList.add('open');
+}
+
+// ════════════════════════════════════════
+// MODELE DOCUMENTE
+// ════════════════════════════════════════
+function refreshModele(){
+  const modele=DB.get('modele')||[];
+  el('modele-count').textContent=modele.length;
+  el('modele-list').innerHTML=modele.length?modele.map(m=>`
+    <div class="doc-item">
+      <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="doc-info">
+        <div class="doc-name" title="${m.name}">${m.name}</div>
+        <div class="doc-meta">${m.size} • Încărcat: ${m.date}</div>
+      </div>
+      <div class="doc-actions">
+        <button class="btn btn-ghost" onclick="downloadModele('${m.id}')">⬇ DESCARCĂ</button>
+        <button class="icon-btn red" onclick="deleteModele('${m.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+      </div>
+    </div>`).join(''):'<div class="empty"><p>Niciun document încărcat</p></div>';
+}
+function dragOver(e){e.preventDefault();el('upload-zone').classList.add('drag');}
+function dragLeave(){el('upload-zone').classList.remove('drag');}
+function dropFile(e){e.preventDefault();el('upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFile(f);}
+function uploadFile(inp){const f=inp.files[0];if(f)processFile(f);inp.value='';}
+function processFile(file){
+  el('upload-err').style.display='none';
+  const maxMB=1;
+  if(file.size>maxMB*1024*1024){showErr('upload-err',`Fișierul depășește ${maxMB}MB.`);return;}
+  const allowed=['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','image/jpeg','image/png'];
+  if(!allowed.includes(file.type)&&!file.name.match(/\.(pdf|doc|docx|jpg|jpeg|png)$/i)){showErr('upload-err','Format neacceptat.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const modele=DB.get('modele')||[];
+    const totalSize=modele.reduce((s,m)=>s+m.rawSize,0);
+    if(totalSize+file.size>4*1024*1024){showErr('upload-err','Depășit limita de 4MB totali.');return;}
+    const newM={id:'m'+Date.now(),name:file.name,size:fmtSize(file.size),rawSize:file.size,date:today(),data:e.target.result,type:file.type};
+    modele.push(newM);
+    if(!DB.set('modele',modele)){showErr('upload-err','Eroare stocare. Verificați spațiul disponibil.');return;}
+    refreshModele();
+  };
+  reader.readAsDataURL(file);
+}
+function downloadModele(id){
+  const m=(DB.get('modele')||[]).find(x=>x.id===id);if(!m)return;
+  const a=document.createElement('a');a.href=m.data;a.download=m.name;document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function deleteModele(id){if(!confirm('Ștergeți documentul?'))return;DB.set('modele',(DB.get('modele')||[]).filter(m=>m.id!==id));refreshModele();}
+
+// ════════════════════════════════════════
+// ELEV DASHBOARD
+// ════════════════════════════════════════
+let elevTabActive='planificari';
+function setElevTab(tab,btn){
+  elevTabActive=tab;
+  document.querySelectorAll('.elev-nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['planificari','rapoarte','arhiva','modele','anunturi'].forEach(t=>el('elev-tab-'+t).style.display=t===tab?'':'none');
+  if(tab==='rapoarte')refreshElevRapoarte();
+  if(tab==='arhiva')refreshElevArhiva();
+  if(tab==='modele')refreshElevModele();
+}
+function refreshElevDash(){
+  const anunturi=DB.get('anunturi')||[];
+  el('elev-anunt-badge').textContent=anunturi.length?`(${anunturi.length})`:'';
+  el('elev-anunturi-list').innerHTML=anunturi.length?anunturi.map(a=>`
+    <div class="anunt-item" style="border-left:3px solid var(--orange)">
+      <div class="anunt-title">${a.titlu}</div>
+      <div class="anunt-body">${a.body}</div>
+      <div class="anunt-meta">✕ ${a.author} · ${a.date}</div>
+    </div>`).join(''):'<div class="empty"><p>Nu există anunțuri</p></div>';
+  const pl=DB.get('planificari')||[];
+  const renderList=(items,elId)=>{
+    const c=el(elId);
+    c.innerHTML=items.length?items.map(p=>`
+      <div class="vis-plan-item" onclick="viewPlan('${p.id}','elev')">
+        <div class="plan-item-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="plan-item-info"><div class="plan-item-title">${LUNI[p.luna]} ${p.an}${p.apActiv?' <span class="badge badge-purple" style="margin-left:4px">AP</span>':''}</div><div class="plan-item-meta">${p.persoane.length} pers.</div></div>
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text3);fill:none;margin-left:auto"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>`).join(''):'<div class="empty"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><p>Nu există planificări</p></div>';
+  };
+  renderList(pl.filter(p=>p.tip==='baieti'),'elev-baieti-list');
+  renderList(pl.filter(p=>p.tip==='fete'),'elev-fete-list');
+  refreshElevRapoarte();
+  const myRapoarte=(DB.get('rapoarte')||[]).filter(r=>r.userId===currentUser?.id);
+  el('elev-r-active-count').textContent=myRapoarte.length?myRapoarte.length:'';
+  const myArhiva=(DB.get('rapoarte_arhiva')||[]).filter(r=>r.userId===currentUser?.id);
+  el('elev-arhiva-count').textContent=myArhiva.length?myArhiva.length:'';
+}
+function refreshElevRapoarte(){
+  const rapoarte=(DB.get('rapoarte')||[]).filter(r=>r.userId===currentUser?.id);
+  const sBadge={pending:'badge-yellow',approved:'badge-green',rejected:'badge-red'};
+  const sL={pending:'ÎN AȘTEPTARE',approved:'APROBAT (arhivare în curs)',rejected:'RESPINS'};
+  el('elev-rapoarte-list').innerHTML=rapoarte.length?rapoarte.map(r=>`
+    <div class="raport-item">
+      <div class="raport-header"><span class="raport-name">${r.tip}</span><span class="badge ${sBadge[r.status]}">${sL[r.status]}</span></div>
+      <div class="raport-motiv">${r.motiv}</div>
+      <div class="raport-meta"><span>📅 ${fmtDate(r.start)} → ${fmtDate(r.end)}</span><span>Depus: ${r.createdAt}</span></div>
+      ${r.adminNote?`<div style="margin-top:8px;padding:8px;background:var(--bg4);border-left:2px solid var(--orange);font-family:var(--mono);font-size:10px;color:var(--text2)">Notă admin: ${r.adminNote}</div>`:''}
+    </div>`).join(''):'<div class="empty"><p>Nu aveți rapoarte active</p></div>';
+  el('elev-r-active-count').textContent=rapoarte.length?rapoarte.length:'';
+}
+function refreshElevArhiva(){
+  const arhiva=(DB.get('rapoarte_arhiva')||[]).filter(r=>r.userId===currentUser?.id);
+  el('elev-arhiva-count').textContent=arhiva.length?arhiva.length:'';
+  el('elev-arhiva-list').innerHTML=arhiva.length?arhiva.map(r=>{
+    const stareOriginal=r.stareInainte||'approved';
+    const stareLabel={approved:'APROBAT',rejected:'RESPINS'}[stareOriginal]||'PROCESAT';
+    const stareBadge={approved:'badge-green',rejected:'badge-red'}[stareOriginal]||'badge-gray';
+    const stareIcon={approved:'✓',rejected:'✕'}[stareOriginal]||'·';
+    return `<div class="raport-item" style="border-left:3px solid ${stareOriginal==='approved'?'var(--green)':'var(--red)'}">
+      <div class="raport-header">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="raport-name">${r.tip}</span>
+          <span class="badge ${stareBadge}">${stareIcon} ${stareLabel}</span>
+          <span class="badge badge-gray">📁 ARHIVAT</span>
+        </div>
+      </div>
+      <div class="raport-motiv">${r.motiv}</div>
+      <div class="raport-meta">
+        <span>📅 ${fmtDate(r.start)} → ${fmtDate(r.end)}</span>
+        <span>Depus: ${r.createdAt}</span>
+        ${r.updatedAt?`<span>Procesat: ${r.updatedAt}</span>`:''}
+      </div>
+      ${r.adminNote?`<div style="margin-top:8px;padding:8px;background:var(--bg4);border-left:2px solid ${stareOriginal==='approved'?'var(--green)':'var(--red)'};font-family:var(--mono);font-size:10px;color:var(--text2)">Notă admin: ${r.adminNote}</div>`:''}
+    </div>`;
+  }).join(''):'<div class="empty"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><p>Niciun raport arhivat</p></div>';
+}
+function refreshElevModele(){
+  const modele=DB.get('modele')||[];
+  el('elev-modele-list').innerHTML=modele.length?modele.map(m=>`
+    <div class="doc-item">
+      <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="doc-info"><div class="doc-name">${m.name}</div><div class="doc-meta">${m.size} • ${m.date}</div></div>
+      <div class="doc-actions">
+        <button class="btn btn-ghost" onclick="downloadModele('${m.id}')">⬇ DESCARCĂ</button>
+      </div>
+    </div>`).join(''):'<div class="empty"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><p>Niciun document disponibil momentan</p></div>';
+}
+
+function openRaportModal(){
+  el('raport-tip').value='Concediu medical';
+  el('raport-start').value='';el('raport-end').value='';el('raport-motiv').value='';
+  el('raport-modal').classList.add('open');
+}
+function submitRaport(){
+  const tip=v('raport-tip'),start=v('raport-start'),end=v('raport-end'),motiv=v('raport-motiv').trim();
+  if(!start||!end||!motiv){alert('Completați toate câmpurile.');return;}
+  if(new Date(start)>new Date(end)){alert('Data de început trebuie să fie înainte de cea de sfârșit.');return;}
+  const rapoarte=DB.get('rapoarte')||[];
+  rapoarte.unshift({id:'r'+Date.now(),userId:currentUser.id,userName:currentUser.name,tip,start,end,motiv,status:'pending',createdAt:today(),updatedAt:null,adminNote:''});
+  DB.set('rapoarte',rapoarte);closeModal('raport-modal');refreshElevRapoarte();refreshAdminDash();
+}
+
+// ════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════
+const LUNI=['','Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+function el(id){return document.getElementById(id);}
+function v(id){return el(id).value;}
+function today(){return new Date().toLocaleDateString('ro-RO');}
+function fmtDate(d){if(!d)return'—';const p=d.split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}`:d;}
+function fmtSize(b){return b>1024*1024?`${(b/1024/1024).toFixed(1)}MB`:`${(b/1024).toFixed(0)}KB`;}
+function showErr(id,msg){const e=el(id);e.textContent=msg;e.style.display='';}
+function closeModal(id){el(id).classList.remove('open');}
+function getPlan(id){return(DB.get('planificari')||[]).find(p=>p.id===id);}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+
+// ════════════════════════════════════════
+// SETĂRI ADMIN
+// ════════════════════════════════════════
+function initSetariAdmin(){
+  if(!currentUser)return;
+  el('s-admin-name').value=currentUser.name;
+  el('s-admin-email').value=currentUser.email;
+  el('setari-profil-info').innerHTML=`<strong>${currentUser.name}</strong> &nbsp;·&nbsp; ${currentUser.isPrincipal?'<span class=\"badge badge-orange\">PRINCIPAL</span>':'Administrator'} &nbsp;·&nbsp; ${currentUser.email}`;
+  el('s-pass-err').style.display='none';el('s-pass-ok').style.display='none';
+  el('s-pass-old').value='';el('s-pass-new').value='';el('s-pass-new2').value='';
+  // AP start
+  const apStart=DB.get('ap_start')??true;
+  el('ap-start-b').classList.toggle('active',apStart===true);
+  el('ap-start-f').classList.toggle('active',apStart===false);
+  // Weekend mode
+  const weMode=DB.get('weekend_mode')||'standard';
+  el('we-std').classList.toggle('active',weMode==='standard');
+  el('we-red').classList.toggle('active',weMode==='redus');
+  // Unitate
+  el('s-unitate').value=DB.get('unitate')||'COMPANIA 1';
+  // Storage info
+  let total=0;try{for(let k in localStorage){if(k.startsWith('ps_'))total+=localStorage[k].length*2;}}catch(e){}
+  el('storage-info').textContent=fmtSize(total)+' utilizați din ~5MB disponibili';
+}
+
+function saveAdminProfil(){
+  const name=el('s-admin-name').value.trim();
+  if(!name){alert('Introduceți un nume.');return;}
+  const users=DB.get('users')||[];
+  const u=users.find(x=>x.id===currentUser.id);
+  if(u){u.name=name;currentUser.name=name;DB.set('users',users);}
+  el('admin-username').textContent=name;
+  el('setari-profil-info').innerHTML=`<strong>${name}</strong> — profil actualizat cu succes.`;
+  el('instr-cod').textContent=DB.get('cod');
+}
+
+function saveAdminPass(){
+  const old=el('s-pass-old').value,nw=el('s-pass-new').value,nw2=el('s-pass-new2').value;
+  el('s-pass-err').style.display='none';el('s-pass-ok').style.display='none';
+  if(!old||!nw||!nw2){showErr('s-pass-err','Completați toate câmpurile.');return;}
+  if(currentUser.pass!==old){showErr('s-pass-err','Parola curentă este incorectă.');return;}
+  if(nw.length<6){showErr('s-pass-err','Parola nouă trebuie să aibă cel puțin 6 caractere.');return;}
+  if(nw!==nw2){showErr('s-pass-err','Parolele noi nu coincid.');return;}
+  const users=DB.get('users')||[];
+  const u=users.find(x=>x.id===currentUser.id);
+  if(u){u.pass=nw;currentUser.pass=nw;DB.set('users',users);}
+  el('s-pass-ok').style.display='';el('s-pass-ok').textContent='Parola a fost schimbată cu succes!';
+  el('s-pass-old').value='';el('s-pass-new').value='';el('s-pass-new2').value='';
+}
+
+function setAPStart(val){
+  DB.set('ap_start',val);
+  el('ap-start-b').classList.toggle('active',val===true);
+  el('ap-start-f').classList.toggle('active',val===false);
+}
+function setWeekendMode(m){
+  DB.set('weekend_mode',m);
+  el('we-std').classList.toggle('active',m==='standard');
+  el('we-red').classList.toggle('active',m==='redus');
+}
+function saveSetariPlanificare(){
+  DB.set('unitate',el('s-unitate').value.trim());
+  const backup_msg=el('backup-msg');
+  // show confirmation temporarily using storage info
+  el('storage-info').textContent='Setări salvate! '+fmtSize(0);
+  initSetariAdmin();
+  alert('Setările de planificare au fost salvate!');
+}
+
+function exportBackup(){
+  const data={
+    users:DB.get('users'),cod:DB.get('cod'),
+    planificari:DB.get('planificari'),anunturi:DB.get('anunturi'),
+    rapoarte:DB.get('rapoarte'),rapoarte_arhiva:DB.get('rapoarte_arhiva'),
+    modele:DB.get('modele'),ap_activ:DB.get('ap_activ'),
+    ap_start:DB.get('ap_start'),unitate:DB.get('unitate'),
+    weekend_mode:DB.get('weekend_mode'),last_antet:DB.get('last_antet'),
+    exportedAt:new Date().toISOString(),version:'3.1'
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`backup_planificare_${new Date().toLocaleDateString('ro-RO').replace(/\./g,'-')}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  el('backup-msg').style.display='';el('backup-msg').textContent='✓ Backup exportat cu succes!';
+  setTimeout(()=>el('backup-msg').style.display='none',3000);
+}
+
+function importBackup(inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.users||!data.planificari){alert('Fișier backup invalid.');return;}
+      if(!confirm('ATENȚIE: Importul va înlocui TOATE datele existente. Continuați?'))return;
+      ['users','cod','planificari','anunturi','rapoarte','rapoarte_arhiva','modele','ap_activ','ap_start','unitate','weekend_mode','last_antet'].forEach(k=>{
+        if(data[k]!==undefined)DB.set(k,data[k]);
+      });
+      alert('Backup restaurat cu succes! Aplicația se va reîncărca.');
+      location.reload();
+    }catch(err){alert('Eroare la citirea fișierului backup: '+err.message);}
+  };
+  reader.readAsText(file);inp.value='';
+}
+
+function resetPlanificari(){
+  if(!confirm('Ștergeți TOATE planificările? Această acțiune este ireversibilă!'))return;
+  DB.set('planificari',[]);refreshAdminDash();alert('Toate planificările au fost șterse.');
+}
+function resetArhiva(){
+  if(!confirm('Ștergeți toate rapoartele arhivate?'))return;
+  DB.set('rapoarte_arhiva',[]);alert('Arhiva a fost curățată.');
+}
+function resetTotal(){
+  if(!confirm('RESET TOTAL: Vor fi șterse TOATE datele (utilizatori, planificări, rapoarte, anunțuri). Această acțiune este IREVERSIBILĂ!\n\nScrieți CONFIRM pentru a continua:'))return;
+  const conf=prompt('Scrieți CONFIRM pentru a reseta aplicația:');
+  if(conf!=='CONFIRM'){alert('Reset anulat.');return;}
+  ['users','cod','planificari','anunturi','rapoarte','rapoarte_arhiva','modele','ap_activ','ap_start','unitate','weekend_mode','last_antet','session'].forEach(k=>DB.del(k));
+  alert('Aplicația a fost resetată. Se va reîncărca.');location.reload();
+}
+
+// ════════════════════════════════════════
+// SETĂRI ELEV
+// ════════════════════════════════════════
+function initSetariElev(){
+  if(!currentUser)return;
+  el('s-elev-name').value=currentUser.name;
+  el('elev-profil-info').textContent=currentUser.name+' · '+currentUser.email;
+  el('elev-username-s').textContent=currentUser.name;
+  el('s-elev-pass-err').style.display='none';el('s-elev-pass-ok').style.display='none';
+  el('s-elev-pass-old').value='';el('s-elev-pass-new').value='';el('s-elev-pass-new2').value='';
+  // Preferences
+  const prefs=DB.get('elev_prefs_'+currentUser.id)||{};
+  el('pref-anunturi-toggle').classList.toggle('on',!!prefs.anunturi);
+  el('pref-highlight-toggle').classList.toggle('on',!!prefs.highlight);
+  // Admin contact
+  const admins=(DB.get('users')||[]).filter(u=>u.role==='admin'&&u.status==='active');
+  el('elev-admin-contact').textContent=admins.length?admins[0].email:'—';
+}
+
+function saveElevProfil(){
+  const name=el('s-elev-name').value.trim();
+  if(!name){alert('Introduceți un nume.');return;}
+  const users=DB.get('users')||[];
+  const u=users.find(x=>x.id===currentUser.id);
+  if(u){u.name=name;currentUser.name=name;DB.set('users',users);}
+  el('elev-username').textContent=name;
+  el('elev-profil-info').textContent=name+' — profil actualizat!';
+}
+
+function saveElevPass(){
+  const old=el('s-elev-pass-old').value,nw=el('s-elev-pass-new').value,nw2=el('s-elev-pass-new2').value;
+  el('s-elev-pass-err').style.display='none';el('s-elev-pass-ok').style.display='none';
+  if(!old||!nw||!nw2){showErr('s-elev-pass-err','Completați toate câmpurile.');return;}
+  if(currentUser.pass!==old){showErr('s-elev-pass-err','Parola curentă este incorectă.');return;}
+  if(nw.length<6){showErr('s-elev-pass-err','Parola nouă trebuie să aibă cel puțin 6 caractere.');return;}
+  if(nw!==nw2){showErr('s-elev-pass-err','Parolele noi nu coincid.');return;}
+  const users=DB.get('users')||[];
+  const u=users.find(x=>x.id===currentUser.id);
+  if(u){u.pass=nw;currentUser.pass=nw;DB.set('users',users);}
+  el('s-elev-pass-ok').style.display='';el('s-elev-pass-ok').textContent='Parola schimbată cu succes!';
+  el('s-elev-pass-old').value='';el('s-elev-pass-new').value='';el('s-elev-pass-new2').value='';
+}
+
+function togglePref(key){
+  const prefs=DB.get('elev_prefs_'+currentUser?.id)||{};
+  prefs[key]=!prefs[key];
+  DB.set('elev_prefs_'+currentUser.id,prefs);
+  el('pref-'+key+'-toggle').classList.toggle('on',!!prefs[key]);
+}
+
+// getSvcList weekend mode handled in main function
+
+
+// ════════════════════════════════════════
+// RESETARE PAROLĂ (ADMIN → ELEV)
+// ════════════════════════════════════════
+let resetTargetUserId = null;
+
+function resetParolaElev(userId, userName) {
+  resetTargetUserId = userId;
+  el('reset-pass-user-info').innerHTML = `<strong>${userName}</strong> &nbsp;·&nbsp; Resetare parolă cont elev`;
+  el('reset-generated-box').style.display = 'none';
+  el('reset-man-pass').value = '';
+  el('reset-man-pass2').value = '';
+  el('reset-man-err').style.display = 'none';
+  el('reset-man-ok').style.display = 'none';
+  setResetTab('gen');
+  el('reset-pass-modal').classList.add('open');
+}
+
+function setResetTab(tab) {
+  el('reset-tab-gen').classList.toggle('active', tab === 'gen');
+  el('reset-tab-man').classList.toggle('active', tab === 'man');
+  el('reset-panel-gen').style.display = tab === 'gen' ? '' : 'none';
+  el('reset-panel-man').style.display = tab === 'man' ? '' : 'none';
+}
+
+function genParolaTemp() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let pass = '';
+  for (let i = 0; i < 8; i++) pass += chars[Math.floor(Math.random() * chars.length)];
+  return pass;
+}
+
+function genResetPass() {
+  const newPass = genParolaTemp();
+  // Apply to user
+  const users = DB.get('users') || [];
+  const u = users.find(x => x.id === resetTargetUserId);
+  if (!u) return;
+  u.pass = newPass;
+  u.mustChangePass = true; // flag: force change on next login
+  DB.set('users', users);
+  // Show result
+  el('reset-generated-pass').textContent = newPass;
+  el('reset-generated-box').style.display = '';
+}
+
+function copyResetPass() {
+  const pass = el('reset-generated-pass').textContent;
+  navigator.clipboard.writeText(pass).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ COPIAT';
+    setTimeout(() => btn.textContent = '⧉ COPIAZĂ', 2000);
+  });
+}
+
+function applyManualReset() {
+  const pass = el('reset-man-pass').value;
+  const pass2 = el('reset-man-pass2').value;
+  el('reset-man-err').style.display = 'none';
+  el('reset-man-ok').style.display = 'none';
+  if (!pass) { showErr('reset-man-err', 'Introduceți o parolă.'); return; }
+  if (pass.length < 4) { showErr('reset-man-err', 'Parola trebuie să aibă cel puțin 4 caractere.'); return; }
+  if (pass !== pass2) { showErr('reset-man-err', 'Parolele nu coincid.'); return; }
+  const users = DB.get('users') || [];
+  const u = users.find(x => x.id === resetTargetUserId);
+  if (!u) return;
+  u.pass = pass;
+  u.mustChangePass = true;
+  DB.set('users', users);
+  el('reset-man-ok').style.display = '';
+  el('reset-man-ok').textContent = `✓ Parola pentru ${u.name} a fost setată! Comunicați-o elevului.`;
+  el('reset-man-pass').value = '';
+  el('reset-man-pass2').value = '';
+}
+
+// ════════════════════════════════════════
+// FORȚARE SCHIMBARE PAROLĂ (ELEV)
+// ════════════════════════════════════════
+function checkMustChangePass() {
+  if (currentUser && currentUser.mustChangePass && currentUser.role === 'elev') {
+    // Show force change modal
+    el('force-old').value = '';
+    el('force-new').value = '';
+    el('force-new2').value = '';
+    el('force-err').style.display = 'none';
+    el('force-change-modal').classList.add('open');
+    return true;
+  }
+  return false;
+}
+
+function forceChangePass() {
+  const oldP = el('force-old').value;
+  const newP = el('force-new').value;
+  const newP2 = el('force-new2').value;
+  el('force-err').style.display = 'none';
+  if (!oldP || !newP || !newP2) { showErr('force-err', 'Completați toate câmpurile.'); return; }
+  if (currentUser.pass !== oldP) { showErr('force-err', 'Parola temporară introdusă este incorectă.'); return; }
+  if (newP.length < 6) { showErr('force-err', 'Parola nouă trebuie să aibă cel puțin 6 caractere.'); return; }
+  if (newP !== newP2) { showErr('force-err', 'Parolele noi nu coincid.'); return; }
+  const users = DB.get('users') || [];
+  const u = users.find(x => x.id === currentUser.id);
+  if (u) {
+    u.pass = newP;
+    u.mustChangePass = false;
+    currentUser.pass = newP;
+    currentUser.mustChangePass = false;
+    DB.set('users', users);
+  }
+  closeModal('force-change-modal');
+  // Show success briefly
+  alert('Parola a fost schimbată cu succes! Bine ați venit!');
+}
+
+
+// ════════════════════════════════════════
+// PWA — INSTALARE CA APLICAȚIE
+// ════════════════════════════════════════
+let pwaInstallPrompt = null;
+
+// Inject manifest dynamically (no external file needed)
+function injectManifest() {
+  const manifest = {
+    name: 'Planificare Servicii — Compania I Elevi',
+    short_name: 'Planificare',
+    description: 'Sistem de planificare a serviciilor militare',
+    start_url: window.location.href,
+    display: 'standalone',
+    background_color: '#0a0a0a',
+    theme_color: '#f57c00',
+    orientation: 'any',
+    icons: [
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230a0a0a'/%3E%3Cpath d='M96 20L20 60v40c0 44 30.4 84.8 76 96 45.6-11.2 76-52 76-96V60L96 20z' fill='%23f57c00'/%3E%3C/svg%3E", sizes: '192x192', type: 'image/svg+xml' },
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230a0a0a'/%3E%3Cpath d='M256 48L48 160v112c0 118 82 226 208 256 126-30 208-138 208-256V160L256 48z' fill='%23f57c00'/%3E%3C/svg%3E", sizes: '512x512', type: 'image/svg+xml' }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  document.getElementById('pwa-manifest').href = url;
+}
+
+// Show/hide all install buttons
+function showInstallButtons(show) {
+  ['admin-install-btn','elev-install-btn','login-install-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = show ? '' : 'none';
+  });
+  const manual = document.getElementById('login-install-manual');
+  if (manual) manual.style.display = (!show && !pwaInstallPrompt) ? '' : 'none';
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  pwaInstallPrompt = e;
+  showInstallButtons(true);
+  // Also show the bottom bar if not dismissed
+  const dismissed = sessionStorage.getItem('pwa-dismissed');
+  if (!dismissed) {
+    const bar = document.getElementById('pwa-install-bar');
+    if (bar) bar.classList.remove('hidden');
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  pwaInstallPrompt = null;
+  showInstallButtons(false);
+  const bar = document.getElementById('pwa-install-bar');
+  if (bar) bar.classList.add('hidden');
+  // Show confirmation
+  const manual = document.getElementById('login-install-manual');
+  if (manual) { manual.style.display=''; manual.innerHTML='<div style="color:var(--green)">✓ Aplicația a fost instalată cu succes!</div>'; }
+});
+
+// On load: check if already installed (standalone mode)
+window.addEventListener('load', () => {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  if (isStandalone) {
+    // Already running as installed app — hide install buttons
+    showInstallButtons(false);
+  } else {
+    // Not installed — always show manual instructions on login page
+    const manual = document.getElementById('login-install-manual');
+    if (manual) manual.style.display = '';
+    // Install buttons shown only when prompt available (set by beforeinstallprompt)
+  }
+});
+
+function installPWA() {
+  if (pwaInstallPrompt) {
+    // Browser supports native install prompt
+    pwaInstallPrompt.prompt();
+    pwaInstallPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        showInstallButtons(false);
+        const bar = document.getElementById('pwa-install-bar');
+        if (bar) bar.classList.add('hidden');
+      }
+      pwaInstallPrompt = null;
+    });
+  } else {
+    // No prompt available — show modal with manual instructions
+    const modal = document.getElementById('install-modal');
+    if (modal) modal.classList.add('open');
+  }
+}
+
+function dismissPWA() {
+  const bar = document.getElementById('pwa-install-bar');
+  if (bar) bar.classList.add('hidden');
+  sessionStorage.setItem('pwa-dismissed', '1');
+}
+
+// ════════════════════════════════════════
+// PERFORMANȚĂ — SUPORT 200+ UTILIZATORI
+// ════════════════════════════════════════
+// Virtualizare listă pentru tabele mari (>100 rânduri)
+// Debounce pentru operații intensive
+// Cache pentru planificări accesate recent
+
+const PerfCache = {
+  _cache: new Map(),
+  get(key) { return this._cache.get(key); },
+  set(key, val) { 
+    if (this._cache.size > 50) {
+      const firstKey = this._cache.keys().next().value;
+      this._cache.delete(firstKey);
+    }
+    this._cache.set(key, val);
+  },
+  clear() { this._cache.clear(); }
+};
+
+// Debounce helper
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
+}
+
+// Optimized DB write — batch multiple writes
+const DBQueue = {
+  _pending: {},
+  _timer: null,
+  queue(key, val) {
+    this._pending[key] = val;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => this.flush(), 50);
+  },
+  flush() {
+    Object.entries(this._pending).forEach(([k, v]) => {
+      try { localStorage.setItem('ps_' + k, JSON.stringify(v)); } catch(e) {
+        console.warn('Storage full:', e);
+      }
+    });
+    this._pending = {};
+  }
+};
+
+// Virtual table renderer for large planificări (>80 rows)
+function buildTableVirtual(plan, editable) {
+  if (plan.persoane.length <= 80) {
+    return buildTable(plan, editable);
+  }
+  // For large lists: render in chunks with IntersectionObserver lazy loading
+  const zile = daysInMonth(plan.an, plan.luna);
+  const DN = ['Du','Lu','Ma','Mi','Jo','Vi','Sâ'];
+  let cols = `<th class="nr-col">Nr.</th><th class="name-col">NUME PRENUMELE</th>`;
+  for (let d = 1; d <= zile; d++) {
+    const dw = getDOW(plan.an, plan.luna, d);
+    const we = dw === 0 || dw === 6;
+    const dayCls=dw===5?'th-vineri':dw===6?'th-sambata':dw===0?'th-duminica':(we?'weekend-header':'');
+    cols += `<th class="${dayCls}"><div class="day-header"><span class="day-name">${DN[dw]}</span><span class="day-num">${d}</span></div></th>`;
+  }
+  cols += `<th style="min-width:40px">OBS</th>`;
+
+  // Render all rows but use CSS will-change for perf
+  const rows = plan.persoane.map((p, idx) => {
+    let cells = `<td class="nr-cell">${idx+1}</td><td class="name-cell">${p.name}</td>`;
+    for (let d = 1; d <= zile; d++) {
+      const dw = getDOW(plan.an, plan.luna, d);
+      const we = dw === 0 || dw === 6;
+      const colCls=dw===5?'col-vineri':dw===6?'col-sambata':dw===0?'col-duminica':(we?'weekend-col':'');
+      const svc = p.servicii[d] || '';
+      const isAP = svc === 'AP';
+      if (editable) {
+        cells += `<td class="svc-cell ${colCls} ${!svc?'empty-c':''} ${isAP?'ap-cell':''}" onclick="openCellModal('${plan.id}',${idx},${d})" title="${p.name}, Ziua ${d}">${svc||'·'}</td>`;
+      } else {
+        cells += `<td class="${colCls}" style="color:${isAP?'var(--purple)':'var(--orange)'};font-weight:bold;font-size:11px;text-align:center">${svc}</td>`;
+      }
+    }
+    cells += `<td></td>`;
+    return `<tr style="contain:layout style">${cells}</tr>`;
+  }).join('');
+
+  return `<table class="schedule-table" style="contain:layout"><thead><tr>${cols}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// Quick search in schedule table
+function initTableSearch(tableWrapId) {
+  const existing = document.getElementById('table-search-bar');
+  if (existing) existing.remove();
+  const bar = document.createElement('div');
+  bar.id = 'table-search-bar';
+  bar.style.cssText = 'padding:8px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px';
+  bar.innerHTML = `
+    <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--text3);fill:none;flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="table-search-input" placeholder="Caută după nume..." 
+      style="background:transparent;border:none;outline:none;font-family:var(--mono);font-size:12px;color:var(--text);width:200px"
+      oninput="filterTableRows(this.value)">
+    <span id="table-search-count" style="font-family:var(--mono);font-size:10px;color:var(--text3)"></span>
+    <button onclick="clearTableSearch()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--mono);font-size:10px">✕ RESET</button>
+  `;
+  const wrap = document.getElementById(tableWrapId);
+  if (wrap && wrap.parentNode) wrap.parentNode.insertBefore(bar, wrap);
+}
+
+function filterTableRows(query) {
+  const q = query.toLowerCase().trim();
+  const rows = document.querySelectorAll('.schedule-table tbody tr');
+  let visible = 0;
+  rows.forEach(row => {
+    const nameCell = row.querySelector('.name-cell');
+    if (!nameCell) return;
+    const name = nameCell.textContent.toLowerCase();
+    const show = !q || name.includes(q);
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  const cnt = document.getElementById('table-search-count');
+  if (cnt) cnt.textContent = q ? `${visible} rezultate` : '';
+}
+
+function clearTableSearch() {
+  const inp = document.getElementById('table-search-input');
+  if (inp) { inp.value = ''; filterTableRows(''); }
+}
+
+// Service Worker for offline support
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+const CACHE = 'planificare-v4';
+const ASSETS = [self.location.href || '/'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(()=>{}));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match(e.request))));
+});
+`;
+    const blob = new Blob([swCode], {type: 'application/javascript'});
+    const url = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url, {scope: '/'}).catch(() => {});
+  }
+}
+
+// Session heartbeat — detect stale sessions (multi-tab support)
+function initHeartbeat() {
+  // Write a heartbeat every 30s so other tabs know this session is alive
+  setInterval(() => {
+    if (currentUser) {
+      sessionStorage.setItem('hb_' + currentUser.id, Date.now());
+    }
+  }, 30000);
+}
+
+// Override renderEditTable to use virtual renderer + search
+const _origRenderEditTable = typeof renderEditTable !== 'undefined' ? renderEditTable : null;
+function renderEditTable(plan) {
+  el('edit-table-wrap').innerHTML = buildTableVirtual(plan, true);
+  initTableSearch('edit-table-wrap');
+}
+function renderViewTable(plan) {
+  el('view-table-wrap').innerHTML = buildTableVirtual(plan, false);
+  initTableSearch('view-table-wrap');
+}
+
+injectManifest();
+registerSW();
+initHeartbeat();
+initDB();
+restoreSession();
+</script>
+
+<!-- ══ SETARI ADMIN ══ -->
+<div id="page-setari-admin" class="page">
+  <div class="topbar">
+    <div class="topbar-back" onclick="goBack()"><svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span class="topbar-title">SETĂRI</span></div>
+  </div>
+  <div class="main"><div class="main-narrow">
+
+    <!-- PROFIL -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><h3>PROFIL ADMINISTRATOR</h3></div>
+      <div id="setari-profil-info" class="info-box" style="margin-bottom:14px"></div>
+      <div class="antet-grid">
+        <div><div class="sec-label">NUME COMPLET</div><input class="simple-input" id="s-admin-name" placeholder="Numele dvs."></div>
+        <div><div class="sec-label">EMAIL</div><input class="simple-input" id="s-admin-email" placeholder="email@exemplu.ro" disabled style="opacity:.5;cursor:not-allowed"></div>
+      </div>
+      <button class="btn btn-orange" style="margin-top:12px" onclick="saveAdminProfil()">SALVARE PROFIL</button>
+    </div>
+
+    <!-- SCHIMBARE PAROLA -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3>SCHIMBARE PAROLĂ</h3></div>
+      <div id="s-pass-err" class="alert alert-err" style="display:none"></div>
+      <div id="s-pass-ok" class="alert alert-ok" style="display:none"></div>
+      <div class="antet-grid">
+        <div><div class="sec-label">PAROLA CURENTĂ</div><input type="password" class="simple-input" id="s-pass-old" placeholder="••••••••"></div>
+        <div></div>
+        <div><div class="sec-label">PAROLA NOUĂ</div><input type="password" class="simple-input" id="s-pass-new" placeholder="••••••••"></div>
+        <div><div class="sec-label">CONFIRMĂ PAROLA NOUĂ</div><input type="password" class="simple-input" id="s-pass-new2" placeholder="••••••••"></div>
+      </div>
+      <button class="btn btn-orange" style="margin-top:12px" onclick="saveAdminPass()">SCHIMBĂ PAROLA</button>
+    </div>
+
+    <!-- SETARI PLANIFICARE -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><h3>SETĂRI PLANIFICARE</h3></div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <!-- Unitate -->
+        <div>
+          <div class="sec-label">DENUMIRE UNITATE (apare în document Word)</div>
+          <input class="simple-input" id="s-unitate" placeholder="ex: COMPANIA 1, BĂIEȚI">
+        </div>
+        <!-- AP start parity -->
+        <div>
+          <div class="sec-label">SERVICIUL AP — PRIMA ZI</div>
+          <div class="tab-switcher" style="margin-bottom:0">
+            <button class="tab-btn" id="ap-start-b" onclick="setAPStart(true)">BĂIAT ÎN ZIUA 1</button>
+            <button class="tab-btn" id="ap-start-f" onclick="setAPStart(false)">FATĂ ÎN ZIUA 1</button>
+          </div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:6px">Controlează paritatea alternării serviciului AP între băieți și fete.</div>
+        </div>
+        <!-- Servicii weekend -->
+        <div>
+          <div class="sec-label">SERVICII WEEKEND BĂIEȚI</div>
+          <div class="tab-switcher" style="margin-bottom:0">
+            <button class="tab-btn" id="we-std" onclick="setWeekendMode('standard')">STANDARD (GS,P1-P4,M)</button>
+            <button class="tab-btn" id="we-red" onclick="setWeekendMode('redus')">REDUS (GS,P1-P4)</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-orange" style="margin-top:16px" onclick="saveSetariPlanificare()">SALVARE SETĂRI</button>
+    </div>
+
+    <!-- BACKUP / RESTORE -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><h3>BACKUP & RESTORE DATE</h3></div>
+      <div class="info-box" style="margin-bottom:14px">Exportați toate datele aplicației (planificări, elevi, rapoarte, anunțuri) într-un fișier JSON. Restaurați dintr-un backup anterior.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="exportBackup()">📥 EXPORT BACKUP</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('restore-input').click()">📤 IMPORT BACKUP</button>
+        <input type="file" id="restore-input" accept=".json" style="display:none" onchange="importBackup(this)">
+      </div>
+      <div id="backup-msg" style="font-family:var(--mono);font-size:11px;color:var(--green);margin-top:10px;display:none"></div>
+    </div>
+
+    <!-- RESETARE DATE -->
+    <div class="card" style="border-color:var(--red)">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--red)" fill="none" style="width:16px;height:16px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><h3 style="color:var(--red)">ZONĂ PERICULOASĂ</h3></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border:1px solid var(--border)">
+          <div>
+            <div style="font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:1px">ȘTERGERE TOATE PLANIFICĂRILE</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:3px">Elimină toate planificările din sistem. Ireversibil.</div>
+          </div>
+          <button class="btn btn-red" onclick="resetPlanificari()">ȘTERGE</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border:1px solid var(--border)">
+          <div>
+            <div style="font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:1px">ȘTERGERE RAPOARTE ARHIVATE</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:3px">Curăță arhiva de rapoarte vechi.</div>
+          </div>
+          <button class="btn btn-red" onclick="resetArhiva()">ȘTERGE</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border:1px solid var(--border)">
+          <div>
+            <div style="font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:1px">RESET COMPLET APLICAȚIE</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:3px">Șterge TOATE datele. Aplicația revine la starea inițială.</div>
+          </div>
+          <button class="btn btn-red" onclick="resetTotal()">RESET TOTAL</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESPRE -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><h3>DESPRE APLICAȚIE</h3></div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text2);line-height:2">
+        <div><span style="color:var(--text3)">Versiune:</span> v3.1</div>
+        <div><span style="color:var(--text3)">Denumire:</span> Planificare Servicii — Compania I Elevi</div>
+        <div><span style="color:var(--text3)">Stocare:</span> Locală (browser localStorage)</div>
+        <div><span style="color:var(--text3)">Compatibilitate:</span> Chrome, Edge, Firefox, Safari</div>
+        <div><span style="color:var(--text3)">Date salvate:</span> <span id="storage-info">—</span></div>
+      </div>
+    </div>
+
+  </div></div>
+</div>
+
+<!-- ══ SETARI ELEV ══ -->
+<div id="page-setari-elev" class="page">
+  <div class="topbar">
+    <div class="topbar-brand"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7L12 2z"/></svg><span>PLANIFICĂRI SERVICII</span></div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="elev-username-s"></span>
+      <button class="btn btn-ghost" onclick="doLogout()">⏻ DECONECTARE</button>
+    </div>
+  </div>
+  <div class="main"><div class="main-narrow">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer;width:fit-content" onclick="showPage('page-elev')">
+      <svg viewBox="0 0 24 24" stroke-width="2" style="width:16px;height:16px;stroke:var(--text3);fill:none"><polyline points="15 18 9 12 15 6"/></svg>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--text3)">Înapoi la dashboard</span>
+    </div>
+
+    <!-- PROFIL -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><h3>PROFILUL MEU</h3></div>
+      <div id="elev-profil-info" class="info-box" style="margin-bottom:14px"></div>
+      <div><div class="sec-label">NUME COMPLET</div><input class="simple-input" id="s-elev-name" placeholder="Numele dvs."></div>
+      <button class="btn btn-orange" style="margin-top:12px" onclick="saveElevProfil()">SALVARE PROFIL</button>
+    </div>
+
+    <!-- SCHIMBARE PAROLA -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3>SCHIMBARE PAROLĂ</h3></div>
+      <div id="s-elev-pass-err" class="alert alert-err" style="display:none"></div>
+      <div id="s-elev-pass-ok" class="alert alert-ok" style="display:none"></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><div class="sec-label">PAROLA CURENTĂ</div><input type="password" class="simple-input" id="s-elev-pass-old" placeholder="••••••••"></div>
+        <div><div class="sec-label">PAROLA NOUĂ</div><input type="password" class="simple-input" id="s-elev-pass-new" placeholder="••••••••"></div>
+        <div><div class="sec-label">CONFIRMĂ PAROLA NOUĂ</div><input type="password" class="simple-input" id="s-elev-pass-new2" placeholder="••••••••"></div>
+      </div>
+      <button class="btn btn-orange" style="margin-top:12px" onclick="saveElevPass()">SCHIMBĂ PAROLA</button>
+    </div>
+
+    <!-- NOTIFICARI -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg><h3>PREFERINȚE</h3></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3);border:1px solid var(--border)">
+          <div>
+            <div style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:1px">AFIȘARE ANUNȚURI LA DESCHIDERE</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:3px">Tab anunțuri activ implicit la login</div>
+          </div>
+          <div id="pref-anunturi-toggle" class="toggle-switch" onclick="togglePref('anunturi')"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3);border:1px solid var(--border)">
+          <div>
+            <div style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:1px">EVIDENȚIERE NUME PROPRIU ÎN PLANIFICARE</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:3px">Marchează rândul cu numele dvs. în tabel</div>
+          </div>
+          <div id="pref-highlight-toggle" class="toggle-switch" onclick="togglePref('highlight')"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESPRE -->
+    <div class="card">
+      <div class="card-header"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--orange)" fill="none" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><h3>DESPRE APLICAȚIE</h3></div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text2);line-height:2">
+        <div><span style="color:var(--text3)">Versiune:</span> v3.1</div>
+        <div><span style="color:var(--text3)">Sistem:</span> Planificare Servicii — Compania I Elevi</div>
+        <div><span style="color:var(--text3)">Contact admin:</span> <span id="elev-admin-contact">—</span></div>
+      </div>
+    </div>
+
+  </div></div>
+</div>
+
+
+<!-- ══ MODAL: RESETARE PAROLĂ (ADMIN) ══ -->
+<div class="modal-overlay" id="reset-pass-modal">
+  <div class="modal" style="min-width:420px">
+    <h3>RESETARE PAROLĂ</h3>
+    <div id="reset-pass-user-info" style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:16px;padding:10px;background:var(--bg3);border-left:3px solid var(--orange)"></div>
+
+    <!-- OPTION TABS -->
+    <div class="tab-switcher" style="margin-bottom:16px">
+      <button class="tab-btn active" id="reset-tab-gen" onclick="setResetTab('gen')">GENEREAZĂ AUTOMAT</button>
+      <button class="tab-btn" id="reset-tab-man" onclick="setResetTab('man')">SETEAZĂ MANUAL</button>
+    </div>
+
+    <!-- AUTO GENERATE -->
+    <div id="reset-panel-gen">
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7">
+        Se va genera o parolă temporară de 8 caractere.<br>
+        Comunicați-o elevului — acesta o va schimba din <strong>Setări → Schimbare Parolă</strong>.
+      </div>
+      <div id="reset-generated-box" style="display:none;margin-bottom:14px">
+        <div class="sec-label">PAROLA TEMPORARĂ GENERATĂ</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+          <div id="reset-generated-pass" style="font-family:var(--mono);font-size:22px;color:var(--green);letter-spacing:4px;font-weight:bold;padding:10px 16px;background:var(--bg3);border:1px solid var(--green);flex:1"></div>
+          <button class="btn btn-ghost" onclick="copyResetPass()">⧉ COPIAZĂ</button>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:8px">⚠ Comunicați această parolă elevului și cereți-i să o schimbe imediat după login.</div>
+      </div>
+      <button class="btn btn-orange" onclick="genResetPass()">🔑 GENEREAZĂ PAROLĂ TEMPORARĂ</button>
+    </div>
+
+    <!-- MANUAL SET -->
+    <div id="reset-panel-man" style="display:none">
+      <div class="field">
+        <label>PAROLĂ NOUĂ PENTRU ELEV</label>
+        <input type="text" class="simple-input" id="reset-man-pass" placeholder="Introduceți parola nouă" style="font-family:var(--mono);font-size:16px;letter-spacing:2px">
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label>CONFIRMĂ PAROLA</label>
+        <input type="text" class="simple-input" id="reset-man-pass2" placeholder="Repetați parola">
+      </div>
+      <div id="reset-man-err" class="alert alert-err" style="display:none;margin-top:10px"></div>
+      <div id="reset-man-ok" class="alert alert-ok" style="display:none;margin-top:10px"></div>
+      <button class="btn btn-orange" style="margin-top:12px" onclick="applyManualReset()">✓ SETEAZĂ PAROLA</button>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:18px">
+      <button class="btn btn-ghost" onclick="closeModal('reset-pass-modal')">ÎNCHIDE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: PAROLĂ TEMPORARĂ (ELEV — forțat la login) ══ -->
+<div class="modal-overlay" id="force-change-modal">
+  <div class="modal" style="min-width:400px">
+    <h3 style="color:var(--orange)">⚠ SCHIMBARE PAROLĂ NECESARĂ</h3>
+    <div class="info-box" style="margin-bottom:16px">
+      Utilizați o parolă temporară setată de administrator.<br>
+      <strong>Trebuie să vă schimbați parola înainte de a continua.</strong>
+    </div>
+    <div id="force-err" class="alert alert-err" style="display:none"></div>
+    <div class="field"><label>PAROLA TEMPORARĂ CURENTĂ</label><input type="password" class="simple-input" id="force-old" placeholder="••••••••"></div>
+    <div class="field" style="margin-top:10px"><label>PAROLA NOUĂ</label><input type="password" class="simple-input" id="force-new" placeholder="min. 6 caractere"></div>
+    <div class="field" style="margin-top:10px"><label>CONFIRMĂ PAROLA NOUĂ</label><input type="password" class="simple-input" id="force-new2" placeholder="••••••••"></div>
+    <button class="btn btn-orange btn-full" style="margin-top:14px" onclick="forceChangePass()">SCHIMBĂ PAROLA ȘI CONTINUĂ</button>
+  </div>
+</div>
+
+
+<!-- PWA INSTALL BAR -->
+<div id="pwa-install-bar" class="pwa-install-bar hidden">
+  <div class="pwa-install-text">
+    <strong>📱 Instalați aplicația</strong> pe dispozitiv pentru acces rapid și funcționare offline
+  </div>
+  <div class="pwa-install-actions">
+    <button class="btn btn-ghost" style="padding:7px 14px;font-size:11px" onclick="dismissPWA()">NU ACUM</button>
+    <button class="btn btn-orange" style="padding:7px 14px;font-size:11px" onclick="installPWA()">⬇ INSTALEAZĂ</button>
+  </div>
+</div>
+
+
+<!-- ══ MODAL: INSTALARE APLICAȚIE ══ -->
+<div class="modal-overlay" id="install-modal">
+  <div class="modal" style="min-width:420px">
+    <h3 style="color:var(--green)">📲 INSTALARE APLICAȚIE</h3>
+    <div class="info-box" style="border-color:var(--green);margin-bottom:16px">
+      Instalați această platformă direct pe dispozitivul dvs. pentru acces rapid, funcționare offline și experiență similară cu o aplicație nativă.
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--blue)">
+        <div style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:6px">🌐 CHROME / EDGE (PC sau Android)</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8">
+          1. Click pe <strong style="color:var(--text)">⋮</strong> (meniu dreapta sus)<br>
+          2. Selectați <strong style="color:var(--text)">"Instalați aplicația"</strong> sau <strong style="color:var(--text)">"Adăugați pe ecranul de pornire"</strong><br>
+          3. Confirmați instalarea
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--orange)">
+        <div style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:6px">🍎 SAFARI (iPhone / iPad)</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8">
+          1. Apăsați butonul <strong style="color:var(--text)">□↑ Share</strong> (jos în mijloc sau sus)<br>
+          2. Defilați și apăsați <strong style="color:var(--text)">"Adaugă pe ecranul principal"</strong><br>
+          3. Apăsați <strong style="color:var(--text)">"Adaugă"</strong> în colțul dreapta sus
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--purple)">
+        <div style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:6px">🦊 FIREFOX</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8">
+          1. Click pe <strong style="color:var(--text)">⋮</strong> (meniu dreapta sus)<br>
+          2. Selectați <strong style="color:var(--text)">"Instalați"</strong> sau <strong style="color:var(--text)">"Adăugați pe ecranul de pornire"</strong>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--text3);text-align:center">
+      După instalare, aplicația apare ca o icoană pe ecranul principal și funcționează offline.
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-orange" onclick="closeModal('install-modal')">AM ÎNȚELES</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
